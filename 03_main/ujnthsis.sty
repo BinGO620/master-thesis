@@ -1,0 +1,195 @@
+% ujnthsis.sty — 济南大学硕士学位论文（学术学位，理工类）版式
+%
+% 参数来源：02_resources/ujn_biyelunwen_muban/ 里的官方模板，其格式说明条目的
+% 原文逐条抄录在本文件各处的注释里。改动参数前先回去核对模板，不要凭印象改。
+%
+% 需要 xelatex / tectonic 编译（ctex 宏包）。首次编译会自动下载缺失的字体与宏包。
+%
+% ---------------------------------------------------------------- 字号对照
+%   三号 16pt   小三 15pt   四号 14pt   小四 12pt   五号 10.5pt   小五 9pt
+% ---------------------------------------------------------------- 页边距
+%   官方模板未在正文格式说明里写页边距，暂按本科模板与常见硕士格式取
+%   上下 2.5cm / 左 3cm / 右 2.5cm。⚠ 交稿前必须对照官方 .doc 的页面设置核一次。
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ujnthsis}[2026/10/23 UJN master thesis style]
+
+% ---------------------------------------------------------------- 字体
+% 学校要求：中文宋体、黑体、楷体，西文 Times New Roman。
+%
+% 本机（Linux）通常没有安装 Windows 的 SimSun / SimHei / Times New Roman。
+% 这里按优先级自动选，装了什么用什么，全都没有才退回 ctex 默认的 Fandol：
+%
+%   宋体     SimSun → Noto Serif CJK SC → FandolSong
+%   黑体     SimHei → Noto Sans CJK SC  → FandolHei
+%   楷体     KaiTi  → AR PL UKai        → FandolKai
+%   西文     Times New Roman → TeX Gyre Termes（与 Times 度量兼容）→ Latin Modern
+%
+% ⚠ 换了字体，行宽和页数会变。定稿排版必须用真正的 SimSun/SimHei/Times New Roman
+%    再排一次，或者在装了这些字体的机器上编译。当前字体只用于写作阶段的版面预览。
+\RequirePackage{fontspec}
+
+\IfFontExistsTF{SimSun}
+  {\setCJKmainfont{SimSun}[BoldFont=SimHei, ItalicFont=KaiTi]}
+  {\IfFontExistsTF{NotoSerifCJKsc-Regular}
+     {\setCJKmainfont{NotoSerifCJKsc-Regular}[
+        BoldFont=NotoSerifCJKsc-Bold, ItalicFont=NotoSerifCJKsc-Regular]}
+     {\setCJKmainfont{FandolSong}[BoldFont=FandolHei, ItalicFont=FandolKai]}}
+
+\IfFontExistsTF{SimHei}
+  {\setCJKfamilyfont{zhhei}{SimHei}}
+  {\IfFontExistsTF{NotoSansCJKsc-Regular}
+     {\setCJKfamilyfont{zhhei}{NotoSansCJKsc-Regular}[BoldFont=NotoSansCJKsc-Bold]}
+     {\setCJKfamilyfont{zhhei}{FandolHei}}}
+
+\IfFontExistsTF{KaiTi}
+  {\setCJKfamilyfont{zhkai}{KaiTi}}
+  {\IfFontExistsTF{AR PL UKai CN}
+     {\setCJKfamilyfont{zhkai}{AR PL UKai CN}}
+     {\setCJKfamilyfont{zhkai}{FandolKai}}}
+
+\IfFontExistsTF{Times New Roman}
+  {\setmainfont{Times New Roman}}
+  {\IfFontExistsTF{TeX Gyre Termes}
+     {\setmainfont{TeX Gyre Termes}}
+     {\relax}}   % 都没有就保持 ctex 默认西文字体
+
+\RequirePackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm,
+          headheight=15pt, headsep=0.5cm, footskip=1cm}
+
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+\RequirePackage{tocloft}   % 目录格式（\cftchapfont 等需要它）
+\RequirePackage{caption}
+\RequirePackage{graphicx}
+\RequirePackage{booktabs}
+\RequirePackage{amsmath,amssymb}
+\RequirePackage{setspace}
+
+% ---------------------------------------------------------------- 正文
+% 原文：「正文中文字体为宋体，西文字体为 Times New Roman，小四号，大纲级别正文文本，
+%        首行缩进 2 字符；两端对齐，段前段后 0 行，1.5 倍行间距。」
+\renewcommand{\normalsize}{\zihao{-4}\selectfont}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0pt}
+\linespread{1.5}
+\raggedright          % 中文两端对齐在 xeCJK 下是默认行为，这里避免 Overfull 泛滥
+\frenchspacing
+
+% ---------------------------------------------------------------- 标题
+% 原文一级：「三号黑体，大纲级别 1 级，居中无缩进；段前段后 1 行，单倍行距。
+%            题序与标题间空一格。每一章另起一页。」
+\ctexset{
+  chapter = {
+    format     = \centering\heiti\zihao{3},
+    name       = {,},
+    number     = \arabic{chapter},
+    aftername  = \quad,
+    beforeskip = 1\baselineskip,
+    afterskip  = 1\baselineskip,
+    pagestyle  = fancy,
+  },
+  % 原文二级：「小三号黑体，大纲级别 2 级，无缩进；段前段后 0.5 行，单倍行距。」
+  section = {
+    format     = \heiti\zihao{-3},
+    aftername  = \quad,
+    beforeskip = 0.5\baselineskip,
+    afterskip  = 0.5\baselineskip,
+  },
+  % 原文三级：「四号黑体，大纲级别 3 级，无缩进；段前段后 0.5 行，单倍行距。」
+  subsection = {
+    format     = \heiti\zihao{4},
+    aftername  = \quad,
+    beforeskip = 0.5\baselineskip,
+    afterskip  = 0.5\baselineskip,
+  },
+}
+
+% ---------------------------------------------------------------- 页眉页脚
+% 原文：「小五号宋体。页眉线为粗细双线，粗线在上，奇数页页眉为「济南大学硕士学位论文」，
+%        偶数页页眉为论文题目。页脚页码为小五号 Times New Roman，居中；
+%        目录、摘要用罗马数字编码，从 I 开始；正文用阿拉伯数字编码，从 1 开始。」
+\newcommand{\ujnthesistitle}{}      % 论文题目，由主文件 \thesistitle 设置
+\newcommand{\thesistitle}[1]{\renewcommand{\ujnthesistitle}{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[CE]{\songti\zihao{5}济南大学硕士学位论文}
+\fancyhead[CO]{\songti\zihao{5}\ujnthesistitle}
+\fancyfoot[C]{\zihao{5}\thepage}
+\renewcommand{\headrulewidth}{0pt}          % 用下面自绘的双线代替默认单线
+\renewcommand{\footrulewidth}{0pt}
+
+% 页眉双线：粗线在上、细线在下
+\makeatletter
+\def\@evenhead{\parbox{\textwidth}{%
+  \songti\zihao{5}\leftmark\hfill\rightmark\\[-2pt]
+  \rule[2pt]{\textwidth}{0.8pt}\\[-1pt]\rule{\textwidth}{0.3pt}}}
+\makeatother
+% 用 fancyhdr 的 CE/CO 更省事，这里覆盖 \@evenhead 会与 fancyhdr 打架，
+% 因此改为在下方用 \fancyhead 的 \rule 方案重建。
+\fancyheadoffset{0pt}
+\renewcommand{\headrule}{%
+  \vspace{-2pt}\hrule height 0.8pt\vspace{1pt}\hrule height 0.3pt}
+
+% 目录与摘要用罗马数字
+\newcommand{\frontmatterpagenumbering}{%
+  \pagenumbering{Roman}%
+  \renewcommand{\thepage}{\Roman{page}}}
+\newcommand{\mainmatterpagenumbering}{%
+  \clearpage\pagenumbering{arabic}%
+  \renewcommand{\thepage}{\arabic{page}}}
+
+% ---------------------------------------------------------------- 目录
+% 原文：「目录标题用三号黑体，两字中间空两格，居中；段前段后 1 行，单倍行距。
+%        目录内容显示到 3 级，宋体小四，1.5 倍行距。
+%        一级无缩进，二级左缩进 2 字符，三级左缩进 4 字符。」
+\renewcommand{\cftchapfont}{\songti\zihao{-4}}
+\renewcommand{\cftsecfont}{\songti\zihao{-4}}
+\renewcommand{\cftsubsecfont}{\songti\zihao{-4}}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftchapindent}{0em}
+\setlength{\cftsecindent}{2em}
+\setlength{\cftsubsecindent}{4em}
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+\renewcommand{\contentsname}{目\quad 录}
+
+% ---------------------------------------------------------------- 图表题注
+% 原文：「中文图题和英文图题：宋体，西文字体 Times New Roman，五号，居中无缩进；
+%        段前 6 磅，段后 6 磅，单倍行距。图序与图名之间空一格。
+%        表序与表名之间空一格。表名中不允许使用标点符号，表名后不加标点。」
+\DeclareCaptionFont{ujncap}{\songti\zihao{5}}
+\captionsetup{
+  font        = ujncap,
+  labelsep    = quad,
+  justification = centering,
+  skip        = 6pt,
+}
+\captionsetup[table]{position=top}
+\captionsetup[figure]{position=bottom}
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\renewcommand{\thefigure}{\arabic{chapter}.\arabic{figure}}
+\renewcommand{\thetable}{\arabic{chapter}.\arabic{table}}
+\renewcommand{\theequation}{\arabic{chapter}.\arabic{equation}}
+
+% ---------------------------------------------------------------- 参考文献
+% 原文：「「参考文献」为三号黑体，加粗，居中；段前段后 1 行，单倍行距。
+%        内容中文字体为宋体，西文字体为 Times New Roman，五号，首行缩进 2 字符，
+%        段前段后 0 行，1.5 倍行间距。」
+\renewcommand{\bibname}{参考文献}
+
+% ---------------------------------------------------------------- 摘要等条目
+% 原文：「「摘要」标题用三号黑体，两字中间空两格，居中；段前段后 1 行，单倍行距。」
+\newcommand{\ujnabstractname}{摘\quad 要}
+\newcommand{\ujnabstractenname}{ABSTRACT}
+\newcommand{\ujnackname}{致\quad 谢}
+\newcommand{\ujnappendixname}{附\quad 录}
+
+% ---------------------------------------------------------------- 常用命令
+\newcommand{\keywords}[1]{\par\noindent{\heiti\zihao{-4}关键词：}{\songti\zihao{-4}#1}}
+\newcommand{\keywordsen}[1]{\par\noindent{\bfseries\zihao{-4}Key Words: }#1}
+
+% 补充材料/附录里的代码块等，行距恢复正常，避免 1.5 倍行距浪费版面
+\newcommand{\tight}{\linespread{1.0}\selectfont}

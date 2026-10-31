@@ -1,0 +1,24 @@
+% frontmatter/bibliography.tex — 参考文献
+%
+% 用 bibtex + gbt7714 样式（国标 GB/T 7714-2015，中文论文通行）。
+% 文献库在 refs/references.bib，两篇小论文的 bib 合并进来即可。
+%
+% 若学校要求著录格式与 gbt7714 有出入，改 refs/ 里的 .bst 或换 biblatex，
+% 不要手工排参考文献列表。
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{参考文献}
+\markboth{参考文献}{参考文献}
+
+\begin{center}
+{\heiti\zihao{3} 参考文献}
+\end{center}
+\vspace{1\baselineskip}
+
+\begingroup
+\zihao{5}
+\setlength{\parindent}{2em}
+\bibliographystyle{refs/gbt7714-numeric}
+\bibliography{refs/references}
+\endgroup

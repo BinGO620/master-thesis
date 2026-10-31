@@ -1,0 +1,565 @@
+% Supplementary material body. Edit this file directly.
+
+\subsection{S1. Experimental protocol (full)}
+
+
+This section fixes the measurement protocol. All decisions below were in force before the campaigns in Sec. 5 were run, and every reported cell is traceable to a single run directory.
+
+
+\subsubsection{S1.1 Datasets and sequences}
+
+
+We evaluate on \textbf{18 RGB-D sequences} (8 from BONN RGB-D Dynamic and 10 from TUM RGB-D), spanning static scenes, low-motion (``sitting'') scenes, high-motion (``walking'') scenes, and dynamic scenes whose movers are \emph{not} people. The denominator is fixed at these 18 sequences throughout; no campaign is allowed to select a subset after seeing results.
+
+
+\begin{table}[H]\centering\footnotesize
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}p{11.0cm}>{\raggedright\arraybackslash}p{2.4cm}}\toprule
+Group & Sequences (alias $\rightarrow$ dataset directory) & Frames \\ \midrule
+TUM static & \path{f1_desk} $\rightarrow$ \path{rgbd_dataset_freiburg1_desk}; \path{f2_xyz} $\rightarrow$ \path{..._freiburg2_xyz}; \path{f3_office} $\rightarrow$ \path{..._freiburg3_long_office_household} & 592 / 3397 / 2515 \\
+TUM dynamic (person) & \path{f2_person} $\rightarrow$ \path{..._freiburg2_desk_with_person} & 3694 \\
+TUM sitting & \path{f3_st_hf} / \path{f3_st_rpy} / \path{f3_st_xyz} $\rightarrow$ \texttt{...\_freiburg3\_sitting\_\{halfsphere,rpy,xyz\}} & 1078 / 796 / 1215 \\
+TUM walking & \path{f3_wk_hf} / \path{f3_wk_rpy} / \path{f3_wk_xyz} $\rightarrow$ \texttt{...\_freiburg3\_walking\_\{halfsphere,rpy,xyz\}} & 1030 / 873 / 828 \\
+BONN mixed movers & \texttt{balloon} / \texttt{balloon2} $\rightarrow$ \texttt{rgbd\_bonn\_balloon\{,2\}} & 439 / 469 \\
+BONN crowds & \texttt{crowd} / \texttt{crowd2} $\rightarrow$ \texttt{rgbd\_bonn\_crowd\{,2\}} & 928 / 895 \\
+BONN object-only movers & \path{mv_no_box} / \path{mv_no_box2} $\rightarrow$ \texttt{rgbd\_bonn\_moving\_nonobstructing\_box\{,2\}} & 778 / 937 \\
+BONN person-only movers & \texttt{pt1} / \texttt{pt2} $\rightarrow$ \texttt{rgbd\_bonn\_person\_tracking\{,2\}} & 580 / 567 \\
+\bottomrule\end{tabular}\end{table}
+
+Frame counts are the dataset lengths \emph{as seen by the loader} after RGB-D association, which is the denominator used by the completion gate of S1.4. Including the object-only group is deliberate: those movers have no person label, so they separate ``handles dynamics'' from ``detects people''.
+
+
+\subsubsection{S1.2 Trajectory accuracy}
+
+
+The headline metric is \textbf{full-trajectory ATE RMSE in cm}, computed with \texttt{evo} as the APE of the translation part after aligning the estimate to ground truth with an \textbf{SE(3) Umeyama alignment without scale correction} (\path{correct_scale=False}, since all sequences are RGB-D). Allowing a similarity (Sim(3)) alignment on RGB-D data shrinks the error by absorbing a global scale factor that an RGB-D system is not entitled to, so it is never used here. We additionally report the relative pose error (RPE, translation part) under the same alignment.
+
+
+Two reporting rules follow from this. ATE is read from the per-run \path{tracking_raw.csv} field \path{ate_rmse_cm}, which covers \textbf{all frames}; the keyframe-only RMSE printed to the console is a different quantity and is never quoted as a headline number. And because ATE is a full-trajectory quantity, a run that terminated early cannot be compared against one that did not; hence the completion gate of S1.4.
+
+
+\subsubsection{S1.3 Seeds, dispersion, and run-to-run nondeterminism}
+
+
+Every configuration is run with \textbf{3 seeds} and reported as mean $\pm$ sd (ddof = 1). Because a mean over three runs can hide bistable behaviour, we additionally report the per-cell \textbf{max/min spread} and flag cells whose spread reaches 2$\times$; for those cells the mean is not quotable on its own.
+
+
+We also disclose a source of dispersion that seed averaging does \emph{not} capture. Re-running an identical configuration with an identical seed does not reproduce the trajectory bit-for-bit: the frontend and backend run asynchronously, so the number of mapping iterations applied per frame depends on wall-clock scheduling. In the one instance where this was measured directly (the same configuration and seed executed twice, both completing all 873 frames), the two runs differed by \textbf{15.72 vs 21.42 cm ATE (1.36$\times$)}. Our cross-seed $\pm$ sd therefore \textbf{understates} total dispersion, most of all on the hardest sequences, and any mean we quote must be read together with its spread.
+
+
+\subsubsection{S1.4 Completion gate}
+
+
+A run counts as completed only if its final trajectory contains at least \textbf{95\%} of the sequence's frames (at least 0.95 times the dataset length). A sequence with fewer than two co-completed seeds in a compared pair is reported as \emph{unresolved} in its own row rather than being dropped: the denominator stays at 18, and a configuration that cannot finish is reported as a failure to finish, not as missing data.
+
+
+\subsubsection{S1.5 Rendering and geometry}
+
+
+Rendering metrics are computed \textbf{offline} from the final Gaussian map (\path{final/} point cloud) re-rendered at full resolution over all frames, giving PSNR, SSIM, LPIPS and depth L1 (cm). We report rendering for our own configurations only where such a re-render exists; arms that were run for tracking only (for instance the naive flow-threshold baseline) show ``---'' in those columns, which denotes \emph{not run}, never \emph{failed}.
+
+
+The map-refinement pass at the end of a run optimises Gaussian parameters only and performs no pose optimisation step, so the trajectory we report is not modified by it. This is what allows our rows in the protocol table (S6) to state a bounded rewrite scope.
+
+
+\subsubsection{S1.6 Efficiency and keyframe coverage}
+
+
+Efficiency is reported from the \textbf{online phase} only: it includes segmentation and online tracking/mapping and excludes offline refinement, offline re-rendering, and geometry evaluation. We report online FPS, peak GPU memory, Gaussian count and online wall-clock.
+
+
+\textbf{Efficiency numbers are only ever compared on identical hardware: between our own configurations, and against our RGD-SLAM reproduction on the same RTX 3090 (the only same-hardware pair).} Other competitors' numbers are reported but never compared, because their hardware differs and, for at least one system in Sec. 2.1, is not reported at all. One residual cost is excluded from our own online figures and we say so explicitly: optical flow is precomputed with a frozen RAFT network, so RAFT inference time is not included in the online FPS, and the end-to-end online cost has not been measured.
+
+
+Keyframe coverage is measured directly rather than inferred, as the number of distinct keyframes the backend processed divided by the run's trajectory length (keyframes per frame).
+
+
+\subsubsection{S1.7 Hardware}
+
+
+All campaigns reported in Sec. 5 were run on \textbf{NVIDIA RTX 3090} GPUs. The system also completes the same sequences within the 6 GB budget of an RTX 2060; where that is mentioned it is a feasibility statement about memory, and FPS measured on the 2060 is never reported next to any other system's.
+
+
+\subsubsection{S1.8 Provenance and reproducibility}
+
+
+Each reported cell corresponds to exactly one run directory. Where a seed was executed more than once, the \textbf{latest} run is used for every metric of that cell, so that a cell's trajectory error and its rendering metrics always come from the same run, and the duplicate is listed explicitly in the table's provenance footer rather than averaged away. This rule exists because the alternative failed once in practice: an append-only roll-up CSV was averaged across two runs of one seed while the rendering columns took only the later one, so the two halves of that row described different runs. Frozen optical flow is precomputed and stored per sequence, which makes the flow input byte-identical across every arm that consumes it.
+
+
+
+\subsubsection{S1.9 Decision rules per campaign, and how pre-registrations are dated}
+
+Each campaign of Sec. 5 fixes one descriptive decision rule before its runs. They are listed side by side so that a supported verdict means the same thing wherever it appears. WP-A factorial (Sec. 5.2): a cell is supported when $|$mean$| \ge 1$ sd of its 3-seed spread, and directional otherwise. WP-B flow control (Sec. 5.4): all seeds same sign, applied to both arms. RPE boundary (Sec. 5.5): a non-overlapping group gap, with $N \ge 1.5$ read as necessary, $N \le 1.2$ as redundant, the open interval $(1.2, 1.5)$ as the ambiguity band, and $N \le 0.8$ as the frozen-sense counterexample line. Pose endpoints (Sec. 5.6): a shift is read only against its own re-run floor (S7). Kernel ablation (S2.2): the floor $\max(0.43 \mathrm{cm}, 6\%$ of the larger mean$)$.
+
+Pre-registration is stated as verifiable where the repository history supports it and as internal where it does not. The ATE-endpoint pre-registration precedes its gate script and verdict in the commit history (commits \texttt{f9fa31ea} and \texttt{053ca8c1}, both 2026-08-22); the coherent-amplitude pre-registration was committed together with its verdict (\texttt{2c693df0}), so its priority rests on the dated note recorded inside the file rather than on a commit split. The remaining campaigns are documented the same way under \path{results/evidence/}, and the anonymised repository released with the paper carries the full history.
+
+
+
+\subsection{S2. Resolved constants and attachment points (Sec. 3)}
+
+
+Every value below was read back from the \textbf{resolved} configuration of a reported run and from the source, not from a nominal default and not from prose. The audit that produced this table corrected three errors in an earlier draft of the body and disclosed a component that draft omitted; it is the method-attachment audit in \path{results/evidence/}.
+
+
+\begin{table}[t]\centering\footnotesize
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{4.0cm}>{\raggedright\arraybackslash}p{4.1cm}>{\raggedright\arraybackslash}p{4.2cm}}\toprule
+Component & Constant & Value & Source \\ \midrule
+Coverage & \path{gap_cap} & 5 frames & resolved \texttt{DynamicKeyframe} \\
+Coverage & keyframe density, native $\rightarrow$ floored & 0.045--0.075 $\rightarrow$ 0.198--0.204 kf/frame & \path{scripts/measure_keyframe_coverage.py} \\
+Coverage & \path{occ_tighten_thresh} & 2.0 (\textbf{inert}) & see below \\
+Robust reweighting & \texttt{kernel} & \texttt{huber} & resolved \texttt{RobustTracking} \\
+Robust reweighting & $\delta_{\text{rgb}} = \delta_{\text{depth}}$ & 0.1 & \path{utils/slam_utils.py:439-453} \\
+Reliability & \path{flow_scale_floor} & 2.0 px & resolved \texttt{ReliabilitySignal} \\
+Reliability & \path{geo_scale_floor} & 0.0 & resolved \texttt{ReliabilitySignal} \\
+Reliability & \path{warmup_iters} & 10 tracking iterations & \path{utils/slam_frontend.py:1136-1141} \\
+Reliability & cue combination \texttt{mode} & \texttt{both} (multiplicative) & resolved default \\
+Reliability & weight floor \path{soft_floor} & \textbf{0.10}, with \path{soft_strength} 1.0 & \path{utils/slam_utils.py:545-563} \\
+Lifecycle & \path{lifecycle_mode} & \texttt{prune} & resolved \texttt{Mapping} \\
+Lifecycle & \path{confirming_views} & 2 & resolved \texttt{DeferredCommit} \\
+Lifecycle & \path{reject_contradictions} & 2 & resolved \texttt{DeferredCommit} \\
+Lifecycle & \path{ttl_keyframes} & 5 keyframes & resolved \texttt{DeferredCommit} \\
+Lifecycle & reliability-weighted confirmation & enabled & \path{utils/deferred_commit.py:427-456} \\
+Semantic mask (optional) & \path{dilate_px} & 7 px & resolved \texttt{SemanticMask} \\
+\bottomrule\end{tabular}\end{table}
+
+\textbf{Where the reliability signal is consumed.} Exactly two sites, both listed because the ablation of Sec. 5.2 removes them together:
+
+
+\begin{table}[t]\centering\footnotesize
+\begin{tabular}{p{5.70cm}p{5.70cm}}\toprule
+Site & Path \\ \midrule
+Tracking RGB \textbf{and} depth residual, weight floored at 0.10 & \path{slam_frontend.py:1213,1294-1310} $\rightarrow$ \path{slam_utils.py:541-594} \\
+Candidate confirmation $C^\pm$ in the lifecycle & \path{slam_frontend.py:1284-1290} (stash) $\rightarrow$ \path{deferred_commit.py:141-144,427-456} \\
+\bottomrule\end{tabular}\end{table}
+
+With the component disabled, no per-frame reliability artefact is written and the confirmation reverts to unweighted integer support/contradiction counts (\path{deferred_commit.py:17-29}). The mapping loss and the keyframe-insertion gate belong to the \textbf{optional semantic mask}, not to the reliability signal (\path{slam_backend.py:429,484} $\rightarrow$ \path{semantic_mask.py:88}; \path{slam_frontend.py:863-870}); our own earlier draft got this attribution wrong.
+
+
+\textbf{The one inert field, reported rather than removed.} \path{occ_tighten_thresh = 2.0} would tighten \path{gap_cap} under high occlusion. It is unreachable twice over: the occlusion statistic it compares against is a frame fraction in $[0,1]$, and the tightened interval it would select (\path{gap_cap_tight}) is not configured at all, so the conjunct is always false (\path{slam_frontend.py:1647,1657-1661}). The rule in force is the pure fixed-interval one.
+
+
+\textbf{One configuration-hygiene wart, stated rather than tidied.} The tracking weight floor is read from the semantic-mask parameter block, so the \emph{mask-free} configuration takes its floor from a block whose own \texttt{enabled} flag is false. The behaviour is well defined and byte-reproducible (the floor is 0.10 in both configurations), but the constant is not stored where its name suggests.
+
+
+\subsubsection{S2.1 What the density lifecycle actually deletes}
+
+
+Across the 45 runs of the main campaign for which the lifecycle counters were retained (all in \texttt{prune} mode), the fraction of created Gaussian lineages ultimately deleted has median \textbf{0.551} and spans \textbf{0.273--0.809}. Explicit contradiction accounts for a median \textbf{6.0\%} of creations (at most 14.8\%); unconfirmed expiry at the time-to-live accounts for the remainder. A reader comparing our configuration against stock MonoGS is therefore comparing against a different density rule.
+
+
+\textbf{A negative result on the same component.} A third lifecycle variant --- holding candidates \emph{out} of the map until confirmed, rather than inserting them and deleting on rejection --- was implemented and compared against the variant we report, and was \textbf{not adopted}: its trajectory error was worse on 4 of 6 sequences. We make no claim that withholding candidates is preferable.
+
+
+
+
+\subsubsection{S2.2 Robust-tracking kernel ablation (Sec. 3.3)}
+
+
+\S{}3.3 pins \texttt{kernel: huber} ($\delta$ = 0.10, both channels). The codebase also implements Cauchy and Geman--McClure; a pre-registered ablation (EXP55, balloon + pt2; extension EXP58, mv\_no\_box + pt1 + f3\_wk\_hf + crowd) replaces only that key, keeping the combined-prune identity of the main-table arm and the same three seeds. Huber itself is never re-run: the anchor is the main-table 3-seed.
+
+
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lrrrrrrl}\toprule
+sequence & Huber (anchor) & Cauchy & $\Delta$ & GM & $\Delta$ & floor & verdict \\ \midrule
+\texttt{balloon} (EXP55) & 3.06$\pm$0.14 & 3.22$\pm$0.28 & +0.16 & 3.52$\pm$0.10 & +0.46 & 0.43 & Cauchy indist.; GM marginal \\
+\texttt{pt2} (EXP55) & 10.44$\pm$0.84 & 12.25$\pm$0.31 & +1.81 & 12.96$\pm$0.91 & +2.52 & 0.74/0.78 & both worse \\
+\path{mv_no_box} (EXP58) & 2.66$\pm$0.12 & 2.56$\pm$0.16 & $-$0.10 & 2.83$\pm$0.13 & +0.17 & 0.43 & both indist. \\
+\texttt{pt1} (EXP58) & 11.89$\pm$2.36 & 11.45$\pm$0.46 & $-$0.44 & 13.68$\pm$5.14 & +1.79 & 0.71/0.82 & cauchy indist. (boundary); \textbf{GM worse} \\
+\path{f3_wk_hf} (EXP58) & 3.29$\pm$0.25 & 3.23$\pm$0.30 & $-$0.06 & 2.97$\pm$0.23 & $-$0.32 & 0.43 & both indist. \\
+\texttt{crowd} (EXP58) & 2.29$\pm$0.05 & 2.38$\pm$0.05 & +0.09 & 2.33$\pm$0.01 & +0.04 & 0.43 & both indist. \\
+\bottomrule\end{tabular}\end{table}
+
+Merged verdict (EXP55 + EXP58): across six sequences and five regimes, \textbf{neither alternative is ever better than Huber}. Outside \texttt{pt2}, 8 of the 10 comparisons are indistinguishable within the floor (max(0.43 cm, 6\% of the larger mean); 3 seeds, descriptive; the Huber anchor comes from the main-table campaign, so the \textasciitilde{}30\% cross-campaign drift discipline applies), one is marginal (Geman--McClure on \texttt{balloon}, +0.46 against a 0.43 floor), and the one clear non-\texttt{pt2} degradation (Geman--McClure on \texttt{pt1}, +1.8 cm with one bistable seed) reproduces the clear \texttt{pt2} result (Cauchy +1.8, Geman--McClure +2.5 cm). $\delta$ is fixed at 0.10 throughout; the kernel $\times$ $\delta$ interaction is untested.
+
+\textbf{The cross-campaign drift discipline, defined once.} An anchor re-run in a different campaign is not expected to reproduce its mean. Audited same-configuration anchors have moved by up to $\sim$15\% between campaigns (mask-free \texttt{balloon} 12.11 in the 18-sequence campaign against 13.85 in the cue-split campaign of S10; the \path{mv_no_box} baseline 13.60 against 15.33), and a directly measured same-seed re-run differs by 1.36$\times$ (S1.3). We therefore budget $\sim$30\% and apply one rule: a cross-campaign comparison is read only as inside-or-outside its pre-registered floor, never as a raw delta, and every ratio quoted in the body divides two cells of one campaign.
+
+
+\subsection{S2.3 Single-variable attribution ladder on \texttt{crowd2} (Sec. 5.3)}
+
+
+The additive ladder of Sec. 5.3 (EXP53/54/56/57), all arms on \texttt{crowd2}, 3 seeds each:
+
+
+\begin{table}[t]\centering\footnotesize
+\begin{tabular}{llr}\toprule
+arm & switches on & ATE (cm) \\ \midrule
+P11 (simpler) & robust + lifecycle + mask@mapping & 6.89$\pm$1.64 \\
++ coverage & + dense keyframing & 5.16$\pm$2.25 \\
++ reliability & + reliability signal (both sites) & 6.00$\pm$2.11 \\
++ coverage + reliability & EXP56 double-variable & 4.55$\pm$1.38 \\
++ insertion gating & EXP57, mask\_insertion only & 5.66$\pm$2.85 \\
+\textbf{Combined (full)} & \textbf{all three switches} & {\boldmath$2.11\pm0.08$} \\
+\bottomrule\end{tabular}\end{table}
+
+No single component or pair approaches the full configuration; the three switches interact strongly on this regime, and the full bundle also resolves the dispersion (sd 1.4--2.9 $\rightarrow$ 0.08). EXP56 verdict: INSERTION-NEEDED; EXP57 verdict: INSERTION-CONTRIBUTES. Each arm is pre-registered; the ladder spans four campaigns, so the \textasciitilde{}30\% cross-campaign drift discipline applies (the P11 and Combined anchors share the EXP53 campaign). Results never enter the 18-sequence denominator. The Combined (full) cell here is the EXP53 campaign anchor, 2.11$\pm$0.08; the same configuration in the 18-sequence denominator reads 2.19$\pm$0.09 (Table 1, S12), a 3.6\% cross-campaign difference well inside the drift discipline. S12 is the canonical value wherever both are quoted.
+
+
+\subsection{S3. Full 18-sequence results table}
+
+
+The body reports the readings; the full table of ATE, PSNR, SSIM, LPIPS and depth-L1 for both of our configurations, the unmodified backbone with its 3-seed dispersion, and the competitor rows, is generated by \path{scripts/build_18seq_main_table.py} into \path{results/evidence/18seq_rendering_main_table.md}. That table is emitted under three refusal gates: it will not build if the baseline denominator CSV is absent, if any of the 18 sequences fails to resolve, or if the baseline means drift by more than 0.011 cm from the published audit (\path{results/evidence/headline_ratio_recompute.md}). Each gate is exercised against a known-bad input in \path{tests/test_vanilla_denominator_gate.py}.
+
+
+\subsubsection{S3.1 Baseline dispersion, per sequence}
+
+
+The improvement ratios in S3.2 divide by the 3-seed rerun of the unmodified backbone, and 8 of the 18 sequences have a baseline coefficient of variation above 20\%. Those 8 are \path{f3_st_hf} (33\%), \path{f3_st_rpy} (52\%), \path{f3_wk_hf} (25\%), \texttt{crowd} (21\%), \texttt{crowd2} (26\%), \path{mv_no_box} (62\%), \path{mv_no_box2} (101\%) and \texttt{pt1} (20\%). \texttt{pt2} sits just below the line at 19.5\% and is reported as borderline.
+
+
+For the two extreme cases the raw seeds are worth stating, because they show the ratio is not a property of our method: \path{mv_no_box} gives 4.69 / 18.48 / 22.82 cm and \path{mv_no_box2} gives 7.68 / 36.40 / 6.43 cm. Extremal pairing therefore puts the \path{mv_no_box} improvement anywhere in 1.30--8.45$\times$ and \path{mv_no_box2} in 1.08--6.77$\times$. These are \textbf{ranges, not confidence intervals}; with 3 seeds per cell no interval estimate is available, so every tier in the body is descriptive.
+
+
+\subsubsection{S3.2 Per-sequence improvement, with pairing ranges}
+
+
+Quotable tier (baseline CV $\le$ 20\%), mask-free: \texttt{pt2} 4.72$\times$ (conservative pairing 3.44$\times$, optimistic 5.83$\times$), \texttt{balloon} 3.25$\times$ (2.79--4.25$\times$), \texttt{balloon2} 2.17$\times$ (1.87--2.40$\times$). Combined: \path{f3_wk_rpy} 14.66$\times$, \texttt{balloon} 12.85$\times$ (conservative 11.97$\times$), \path{f3_wk_xyz} 9.20$\times$, \texttt{balloon2} 4.18$\times$, \texttt{pt2} 4.20$\times$. Report-with-dispersion tier: \texttt{crowd2} 67.33$\times$ against a baseline of 147.46$\pm$39.03, \texttt{crowd} 37.76$\times$ against 86.47$\pm$18.34, \path{f3_wk_hf} 13.51$\times$ against 44.45$\pm$11.06, \texttt{pt1} 3.77$\times$ with both sides dispersed. Ratios are quotients of the cells of the authoritative 18-sequence table (\path{results/evidence/18seq_rendering_main_table.md}, the same cells as S12); pairing ranges are per-seed extreme pairings and are wider than a mean/mean quotient.
+
+
+\subsubsection{S3.3 Rendering metrics for our two configurations, all 18 sequences}
+
+
+The body reports ATE only. The rendering columns for both of our configurations are reproduced here in full (3-seed mean $\pm$ sd, offline re-render of the final map at full resolution over all frames; protocol in S1.5). The corroboration rule of S5 applies to every cell: of these four metrics only \textbf{depth-L1 against ground-truth depth} is co-ordered with ATE; full-frame PSNR is read as a map self-consistency score, not as trajectory evidence. Backbone and competitor rendering numbers are not reproduced here; they come from a different measurement chain (single published means, no dispersion), and S6 explains why they are not comparable cell-to-cell; the full mixed table lives in \path{results/evidence/18seq_rendering_main_table.md} and is regenerated by \path{scripts/build_18seq_main_table.py} under the refusal gates described above.
+
+
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{llrrrrr}\toprule
+sequence & arm & ATE (cm)$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & LPIPS$\downarrow$ & depth-L1 (cm)$\downarrow$ \\ \midrule
+\path{f1_desk} & mask-free & 1.49$\pm$0.05 & 18.70$\pm$0.10 & 0.736$\pm$0.007 & 0.321$\pm$0.011 & 4.32$\pm$0.08 \\
+\path{f1_desk} & combined & 1.39$\pm$0.04 & 18.74$\pm$0.10 & 0.739$\pm$0.004 & 0.318$\pm$0.008 & 4.22$\pm$0.04 \\
+\path{f2_xyz} & mask-free & 1.91$\pm$0.04 & 15.92$\pm$0.07 & 0.731$\pm$0.002 & 0.292$\pm$0.007 & 4.11$\pm$0.45 \\
+\path{f2_xyz} & combined & 1.93$\pm$0.03 & 15.98$\pm$0.05 & 0.730$\pm$0.004 & 0.291$\pm$0.003 & 3.96$\pm$0.09 \\
+\path{f3_office} & mask-free & 1.59$\pm$0.02 & 18.95$\pm$0.30 & 0.732$\pm$0.010 & 0.329$\pm$0.016 & 9.37$\pm$0.64 \\
+\path{f3_office} & combined & 1.55$\pm$0.11 & 18.50$\pm$1.12 & 0.719$\pm$0.027 & 0.353$\pm$0.029 & 11.54$\pm$3.79 \\
+\path{f2_person} & mask-free & 6.79$\pm$0.18 & 17.49$\pm$0.44 & 0.591$\pm$0.024 & 0.463$\pm$0.030 & 18.45$\pm$1.50 \\
+\path{f2_person} & combined & 7.34$\pm$0.25 & 17.09$\pm$0.19 & 0.595$\pm$0.010 & 0.487$\pm$0.020 & 24.91$\pm$2.19 \\
+\path{f3_st_hf} & mask-free & 35.59$\pm$0.47 & 16.69$\pm$0.33 & 0.569$\pm$0.011 & 0.456$\pm$0.018 & 31.91$\pm$1.30 \\
+\path{f3_st_hf} & combined & 29.43$\pm$8.00 & 14.89$\pm$0.07 & 0.552$\pm$0.002 & 0.485$\pm$0.007 & 46.62$\pm$3.53 \\
+\path{f3_st_rpy} & mask-free & 2.63$\pm$0.17 & 18.64$\pm$0.14 & 0.707$\pm$0.004 & 0.295$\pm$0.005 & 13.33$\pm$0.06 \\
+\path{f3_st_rpy} & combined & 2.58$\pm$0.17 & 17.27$\pm$0.20 & 0.670$\pm$0.000 & 0.367$\pm$0.002 & 22.11$\pm$1.14 \\
+\path{f3_st_xyz} & mask-free & 2.66$\pm$0.64 & 20.11$\pm$0.29 & 0.721$\pm$0.012 & 0.246$\pm$0.019 & 11.44$\pm$0.32 \\
+\path{f3_st_xyz} & combined & 4.69$\pm$0.71 & 16.83$\pm$0.07 & 0.662$\pm$0.008 & 0.315$\pm$0.010 & 34.48$\pm$1.74 \\
+\path{f3_wk_hf} & mask-free & 17.33$\pm$2.97 & 14.94$\pm$0.51 & 0.491$\pm$0.027 & 0.513$\pm$0.023 & 50.25$\pm$1.90 \\
+\path{f3_wk_hf} & combined & 3.29$\pm$0.25 & 15.69$\pm$0.04 & 0.622$\pm$0.010 & 0.382$\pm$0.012 & 52.66$\pm$0.58 \\
+\path{f3_wk_rpy} & mask-free & 14.61$\pm$2.12 & 14.41$\pm$0.15 & 0.494$\pm$0.014 & 0.516$\pm$0.017 & 60.84$\pm$4.49 \\
+\path{f3_wk_rpy} & combined & 4.29$\pm$0.48 & 14.93$\pm$0.03 & 0.624$\pm$0.008 & 0.396$\pm$0.003 & 66.38$\pm$0.50 \\
+\path{f3_wk_xyz} & mask-free & 26.84$\pm$0.71 & 15.28$\pm$0.06 & 0.522$\pm$0.001 & 0.557$\pm$0.004 & 116.96$\pm$14.45 \\
+\path{f3_wk_xyz} & combined & 3.06$\pm$0.52 & 17.65$\pm$0.08 & 0.715$\pm$0.003 & 0.301$\pm$0.003 & 76.78$\pm$0.17 \\
+\texttt{balloon} & mask-free & 12.11$\pm$2.33 & 22.49$\pm$0.14 & 0.843$\pm$0.002 & 0.284$\pm$0.001 & 26.82$\pm$2.57 \\
+\texttt{balloon} & combined & 3.06$\pm$0.14 & 21.56$\pm$0.30 & 0.853$\pm$0.001 & 0.281$\pm$0.002 & 26.71$\pm$1.31 \\
+\texttt{balloon2} & mask-free & 10.14$\pm$0.61 & 19.75$\pm$0.13 & 0.794$\pm$0.003 & 0.338$\pm$0.005 & 32.19$\pm$1.43 \\
+\texttt{balloon2} & combined & 5.27$\pm$0.12 & 19.31$\pm$0.10 & 0.815$\pm$0.001 & 0.325$\pm$0.003 & 38.00$\pm$0.57 \\
+\texttt{crowd} & mask-free & 34.89$\pm$28.27 & 15.10$\pm$1.17 & 0.639$\pm$0.081 & 0.537$\pm$0.114 & 45.31$\pm$10.77 \\
+\texttt{crowd} & combined & 2.29$\pm$0.05 & 17.08$\pm$0.09 & 0.766$\pm$0.006 & 0.368$\pm$0.019 & 33.54$\pm$0.83 \\
+\texttt{crowd2} & mask-free & 45.89$\pm$17.35 & 16.16$\pm$0.49 & 0.665$\pm$0.009 & 0.496$\pm$0.007 & 42.07$\pm$3.17 \\
+\texttt{crowd2} & combined & 2.19$\pm$0.09 & 15.71$\pm$0.10 & 0.750$\pm$0.001 & 0.375$\pm$0.002 & 46.46$\pm$0.06 \\
+\path{mv_no_box} & mask-free & 3.10$\pm$0.46 & 24.71$\pm$0.07 & 0.874$\pm$0.001 & 0.220$\pm$0.003 & 18.25$\pm$0.31 \\
+\path{mv_no_box} & combined & 2.65$\pm$0.12 & 24.65$\pm$0.02 & 0.877$\pm$0.002 & 0.217$\pm$0.005 & 18.51$\pm$1.50 \\
+\path{mv_no_box2} & mask-free & 5.62$\pm$0.30 & 25.07$\pm$0.05 & 0.881$\pm$0.001 & 0.239$\pm$0.005 & 19.09$\pm$0.87 \\
+\path{mv_no_box2} & combined & 5.14$\pm$0.28 & 25.13$\pm$0.02 & 0.884$\pm$0.001 & 0.235$\pm$0.004 & 18.80$\pm$0.82 \\
+\texttt{pt1} & mask-free & 32.41$\pm$8.52 & 21.97$\pm$0.45 & 0.829$\pm$0.009 & 0.323$\pm$0.009 & 33.84$\pm$5.76 \\
+\texttt{pt1} & combined & 11.89$\pm$2.36 & 22.19$\pm$0.11 & 0.856$\pm$0.002 & 0.278$\pm$0.004 & 29.05$\pm$2.95 \\
+\texttt{pt2} & mask-free & 9.30$\pm$0.64 & 22.06$\pm$0.12 & 0.854$\pm$0.001 & 0.269$\pm$0.006 & 26.13$\pm$2.84 \\
+\texttt{pt2} & combined & 10.45$\pm$0.84 & 21.97$\pm$0.17 & 0.853$\pm$0.003 & 0.265$\pm$0.006 & 26.98$\pm$1.85 \\
+\bottomrule\end{tabular}\end{table}
+
+
+
+\subsection{S4. The two-by-two ablation over mask and coverage}
+
+
+Three seeds per cell; the values are ATE in cm (sd with ddof = 1, as S1.3); the two mask-off, coverage-on cells are the same runs as the mask-free rows of S12.
+
+
+\begin{table}[t]\centering\footnotesize
+\begin{tabular}{lrr}\toprule
+ & coverage on & coverage off \\ \midrule
+\texttt{balloon}, mask on & 3.06$\pm$0.14 & 3.03 (2.80 / 3.25 / 3.04) \\
+\texttt{balloon}, mask off & 12.11$\pm$2.33 & 13.48 (13.34 / 12.72 / 14.37) \\
+\path{mv_no_box}, mask on & 2.65$\pm$0.12 & 3.15 (3.38 / 3.03 / 3.05) \\
+\path{mv_no_box}, mask off & 3.09$\pm$0.46 & 3.90 (3.59 / 4.52 / 3.60) \\
+\bottomrule\end{tabular}\end{table}
+
+On \texttt{balloon} the mask axis moves ATE roughly fourfold while the coverage axis moves it essentially not at all (3.06 vs 3.03), which is consistent with the negative coverage marginal reported in Sec. 5.2 and is why we do not describe coverage as the kernel. On \path{mv_no_box} all four cells land within 2.66--3.90 cm against a baseline mean of 15.33 cm: neither switch accounts for the improvement on its own, and the robust-reweighting and reliability components hold the result without them. The components are mutually redundant on that sequence, and only removing all of them returns the system to baseline.
+
+
+
+
+\subsection{S5. Efficiency, rendering, and dispersion detail}
+
+
+\textbf{Optical flow cost.} RAFT inference is 54 ms per frame pair, measured over 17002 frame pairs across 11 sequences on an RTX 3090 (RAFT-small, 12 iterations, 640$\times$480), which bounds that branch near 18.6 fps. It is precomputed, so it is \textbf{not} in our reported online rate; an end-to-end deployment must pay it. Efficiency is only ever compared on identical hardware, between our own configurations and against the RGD-SLAM reproduction on the same RTX 3090 (Table S5.1); figures from other machines are reported but never compared.
+
+
+\textbf{Efficiency summary.} The complete online summary is below; all values are mean $\pm$ sd over 54 runs per arm. Mask R-CNN is included for combined, while RAFT is excluded as stated above.
+
+
+\begin{table}[t]\centering\footnotesize
+\begin{tabular}{lrrrr}\toprule
+arm & online FPS & GPU (GB) & Gaussians & n runs \\ \midrule
+combined & 0.75$\pm$0.09 & 4.02$\pm$1.01 & 61,371 & 54 \\
+mask-free & {\boldmath$0.77\pm0.21$} & {\boldmath$3.43\pm0.99$} & 67,600 & 54 \\
+RGD-SLAM & 0.67$\pm$0.16 & 7.37$\pm$1.06 & --- & 54 \\
+\bottomrule\end{tabular}\end{table}
+
+\textbf{Table S5.1.} Online efficiency summary. Bold marks the best FPS or GPU-memory value; Gaussian counts are informational. RGD-SLAM is the authors' 3-seed reproduction on the same RTX 3090, the only same-hardware comparison in the paper.
+
+
+\textbf{Coverage cost.} Flooring the keyframe interval costs 2.7--4.5$\times$ more keyframes and roughly double the final map size.
+
+
+\textbf{Why only depth-L1 is read as corroborating.} Full-frame PSNR consistently rewards the arm with the \emph{worse} trajectory: it scores how well a map explains the drifted training views it was built from. We tested the obvious fix, restricting PSNR to a static band, and it accounts for under a quarter of the discrepancy, so we withdrew the ``dynamic pixels bias the average'' reading while keeping the observation. Of the four rendering metrics, only depth-L1 against ground-truth depth is co-ordered with ATE. Where the mask lowers PSNR while raising SSIM we report both.
+
+
+\textbf{Run-to-run nondeterminism.} Frontend and backend run asynchronously, so mapping iterations per frame depend on wall-clock scheduling and an identical configuration with an identical seed does not reproduce bit-for-bit. Measured directly on one such pair, both completing all 873 frames: 15.72 vs 21.42 cm ATE, a factor of 1.36. Cross-seed sd therefore understates total dispersion. This nondeterminism is arm- and sequence-specific rather than a constant (elsewhere the same-seed spread has been as small as 0.05--0.59 cm and as large as 2.99 vs 33.70 cm), so no single measurement of it extrapolates to another configuration.
+
+
+\textbf{Static-scene degradation, in full.} On the fully static Replica sequences the combined configuration is both worse and less stable than the unmodified backbone: \texttt{office0} 3.82$\pm$4.58 cm against 0.368$\pm$0.012 (coefficient of variation 120\% against 3\%, with one seed at 9.10 cm), and \texttt{room0} bistable as well. The baseline is itself bimodal on \texttt{room0} (two basins at 0.247 and 0.492), so bistability there is partly a property of the regime and not only of our method. Evidence: the Replica seed verdict; the rendering metrics on the same runs are in S9.
+
+
+
+
+\subsection{S6. Reading absolute numbers across systems}
+
+
+The dynamic-SLAM systems we cite are not evaluated under a common protocol, and the differences are large enough to change how their absolute numbers should be read. They differ in \textbf{input modality} (WildGS-SLAM is monocular RGB; the rest are RGB-D), in \textbf{which pretrained networks they consume}, in \textbf{how far back the reported trajectory is rewritten by later frames} --- DG-SLAM runs dense bundle adjustment ``upon completion of tracking'', WildGS-SLAM a final global BA ``after processing all the input frames'', Co-SLAM a global BA ``sampling rays from all past keyframes'', whereas MonoGS and our system optimise only within a bounded keyframe window --- and in \textbf{reported hardware}, which for one system is not stated at all.
+
+
+\path{results/evidence/competitor_protocol_table.md} lists these axes per method with the sentence and line number supporting each cell, and our own configurations appear in the same table under the same columns. We state these differences to make the comparison legible, \textbf{not} to argue that any of these methods is unfair or that our numbers should be discounted. No conclusion in this paper rests on that table.
+
+
+
+
+\subsection{S7. The coherent-amplitude measurement, in full (Sec. 5.6)}
+
+
+Sec. 5.6 reports the variance--bias mechanism as a three-endpoint chain. This section documents all three endpoints to the same standard: definitions, per-run readings, apparatus gates, floor constructions, and the self-limits that travel with each claim. The middle endpoint is the one that upgraded the mechanism from candidate to measured.
+
+\textbf{The three endpoints, defined.} The \emph{per-frame dynamic penalty} $P$ of a run is median RPE over high-dynamic frame pairs minus median RPE over low-dynamic pairs, in cm per frame: the per-frame cost of dynamic content under the run's own trajectory. The \emph{coherent amplitude} is defined next. The \emph{full-trajectory ATE} is the headline metric of S1.2. The per-frame dynamic annotation that splits high from low dynamic exists only on \texttt{balloon}, which is why all three legs are balloon-local. Arm E carries the tracking weight on 10 of 100 iterations, arm F on all 100; the intervention of Sec. 5.6 is E $\rightarrow$ F.
+
+
+\textbf{The coherent-amplitude endpoint.} For each run, high- and low-dynamic frame pairs are split by the per-frame dynamic annotation (available only on \texttt{balloon}). The \emph{coherent amplitude} of a run is \texttt{coherence $\times$ median|RPE|} on the high-dynamic pairs, where coherence is the mean cosine similarity between consecutive RPE vectors: it measures how much of the per-frame error is a \emph{consistent, drift-contributing} push rather than jitter. RPE vectors (not absolute pose errors) are used because their coherence is 0.20--0.26 and separates the arms, whereas per-frame absolute-error coherence is $\approx$0.93 for both arms, dominated by trajectory drift and structurally unable to separate them.
+
+
+\textbf{Per-run readings} (arm E = tracking weight on 10/100 iterations, arm F = 100/100; 3 seeds $\times$ 2 re-runs each, so each cell carries its own within-config noise):
+
+
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lrrrrr}\toprule
+arm & seed & RPE\_hi (cm) & coh\_hi & amp\_hi & amp\_lo \\ \midrule
+E & 0 & 1.453 & 0.2444 & 0.3552 & 0.1796 \\
+E & 0 & 1.450 & 0.2495 & 0.3617 & 0.1694 \\
+E & 1 & 1.543 & 0.2616 & 0.4038 & 0.1738 \\
+E & 1 & 1.490 & 0.2596 & 0.3868 & 0.1814 \\
+E & 2 & 1.507 & 0.2445 & 0.3686 & 0.1931 \\
+E & 2 & 1.425 & 0.2515 & 0.3583 & 0.2140 \\
+F & 0 & 1.512 & 0.2275 & 0.3439 & 0.1650 \\
+F & 0 & 1.492 & 0.2192 & 0.3272 & 0.1672 \\
+F & 1 & 1.639 & 0.2110 & 0.3458 & 0.1439 \\
+F & 1 & 1.654 & 0.2196 & 0.3632 & 0.1597 \\
+F & 2 & 1.496 & 0.2290 & 0.3426 & 0.1410 \\
+F & 2 & 1.701 & 0.2132 & 0.3625 & 0.1280 \\
+\bottomrule\end{tabular}\end{table}
+
+Seed means: E 0.3584 / 0.3953 / 0.3634 $\rightarrow$ 0.3724; F 0.3356 / 0.3545 / 0.3526 $\rightarrow$ 0.3476. \textbf{F $-$ E = $-$0.0248} (F lower on 3/3 seeds), against a variance-matched re-run floor of 0.0180, the 1.38$\times$ margin reported in the body. Two apparatus gates passed before the reading was taken: every run's amp\_hi > amp\_lo (the high-dynamic frames really do carry more drift), and median RPE(hi) sits at 1.42--1.70 cm, consistent with the penalty endpoint's magnitude.
+
+
+\textbf{Noise decomposition} (within-config = same configuration re-run, between-seed = across seeds):
+
+
+\begin{table}[t]\centering\footnotesize
+\begin{tabular}{lrrr}\toprule
+arm & within-config & between-seed & ratio \\ \midrule
+E & 0.0113 & 0.0368 & 0.31 \\
+F & 0.0180 & 0.0190 & 0.95 \\
+\bottomrule\end{tabular}\end{table}
+
+F's within-config noise is higher and nearly equal to its between-seed noise, itself consistent with the variance-side of the mechanism: a wider suppression leaves each run noisier.
+
+\textbf{The per-frame dynamic penalty endpoint, in full.} Same 12 runs as above (3 seeds $\times$ 2 re-runs per cell). Per-run $P$ in cm per frame:
+
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lrrrr}\toprule
+arm & seed & P (two re-runs) & cell mean & within-config $|\Delta P|$ \\ \midrule
+E & 0 & +0.3673 / +0.4205 & +0.3939 & 0.0533 \\
+E & 1 & +0.3907 / +0.3750 & +0.3828 & 0.0157 \\
+E & 2 & +0.4407 / +0.3111 & +0.3759 & 0.1296 \\
+F & 0 & +0.4033 / +0.3738 & +0.3885 & 0.0295 \\
+F & 1 & +0.5393 / +0.5481 & +0.5437 & 0.0088 \\
+F & 2 & +0.3861 / +0.5381 & +0.4621 & 0.1520 \\
+\bottomrule\end{tabular}\end{table}
+
+Paired shift per seed: $-$0.0053 / +0.1609 / +0.0862; mean shift \textbf{+0.0806}, so the wider suppression leaves each frame worse. The floor is the largest $|$mean$|$ over the 8 sign-flip combinations of each arm's three within-config differences (the max over both arms), giving 0.0662 and a margin of \textbf{1.22$\times$}; the variance-matched variant (floor divided by $\sqrt{2}$) gives 1.72$\times$ and the same label. Three bounds travel with this reading. The margin is the thinnest of the three endpoints. The gate shows that $P$ moves, not that the per-seed shifts agree in sign (they are 2 of 3, and sign is not the criterion). And the floor is a maximum over few sign vectors, dominated by seed 2 in both arms. Preregistration and gate: \path{results/evidence/pose_trackside_paired_prereg.md}, \path{scripts/pose_trackside_paired_gate.py}.
+
+\textbf{The ATE endpoint, in full.} Same 12 runs, full-trajectory ATE in cm:
+
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lrrrr}\toprule
+arm & seed & ATE (two re-runs) & cell mean & within-config $|\Delta$ATE$|$ \\ \midrule
+E & 0 & 8.1828 / 7.9733 & 8.0781 & 0.2095 \\
+E & 1 & 9.7184 / 9.3165 & 9.5175 & 0.4019 \\
+E & 2 & 9.4040 / 9.4741 & 9.4390 & 0.0701 \\
+F & 0 & 7.4447 / 8.0339 & 7.7393 & 0.5892 \\
+F & 1 & 6.9805 / 7.3990 & 7.1898 & 0.4185 \\
+F & 2 & 7.8344 / 7.8824 & 7.8584 & 0.0480 \\
+\bottomrule\end{tabular}\end{table}
+
+Paired shift per seed: $-$0.3388 / $-$2.3277 / $-$1.5807; mean shift \textbf{$-$1.4157 cm} against the same sign-flip floor construction, 0.3519 cm, a margin of \textbf{4.0$\times$} (variance-matched 0.2488, same label). Two bounds travel with it. The per-seed shifts vary by more than the shift's own floor, so the reading is that on these three seeds F's ATE is consistently better and the mean shift is four times the run-to-run floor, not an effect-size estimate. And the two half-batches come from different times and concurrency levels; each half on its own gives $-$1.68 and $-$1.15 cm, same sign and similar magnitude, and the rerun half is internally concurrency-matched. Preregistration \path{results/evidence/pose_trackside_ate_prereg.md} (commit \texttt{f9fa31ea}, before gate script and verdict \texttt{053ca8c1}); gate \path{scripts/pose_trackside_ate_gate.py}.
+
+\textbf{Self-limits (must travel with the claim).} (1) Only \texttt{balloon} supports the decomposition; the covariate exists nowhere else, so the conclusion is sequence-local. (2) The penalty margin (1.22$\times$) and the coherent margin (1.38$\times$) are the weakest links and need more repeats. (3) coherent amplitude is not ATE: it measures the per-run drift \emph{contribution}, not accumulated drift; ATE also depends on trajectory length and alignment. (4) The measurement confirms variance--bias as \emph{a} mechanism, not the only one. A map-side contribution to the ATE gain is not excluded. Preregistration \path{results/evidence/pose_coherent_prereg.md} (committed together with its verdict, \texttt{2c693df0}; its priority is the dated note inside the file, see S1.9); reproduce with \path{scripts/pose_coherent_component.py}.
+
+
+
+
+\subsection{S8. The RPE boundary held-out test, per run (Sec. 5.5)}
+
+
+Sec. 5.5 reports the held-out check as four agreeing cells plus one in-band. The per-seed values behind it, with the same provenance rules as every other table (latest run per seed; four cells were executed twice and are listed in the JSON, with the first-run values changing no classification):
+
+
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{llrrrr}\toprule
+sequence & arm & seed 0 & seed 1 & seed 2 & mean \\ \midrule
+\path{moving_obstructing_box} & mask-free ATE & 32.19 & 41.41 & 32.10 & 35.23 \\
+ & mask-free RPE & 2.067 & 2.259 & 2.025 & 2.117 \\
+ & combined ATE & 25.86 & 30.32 & 18.17 & 24.78 \\
+\path{moving_obstructing_box2} & mask-free ATE & 30.17 & 32.38 & 32.21 & 31.59 \\
+ & mask-free RPE & 2.073 & 2.118 & 2.014 & 2.068 \\
+ & combined ATE & 17.51 & 19.16 & 21.76 & 19.48 \\
+\texttt{synchronous} & mask-free ATE & 63.50 & 68.37 & 64.42 & 65.43 \\
+ & mask-free RPE & 2.445 & 2.524 & 2.305 & 2.424 \\
+ & combined ATE & 0.50 & 0.43 & 0.48 & 0.47 \\
+\path{f2_desk_with_person} & mask-free ATE & 6.38 & 5.78 & 6.15 & 6.10 \\
+ & mask-free RPE & 0.604 & 0.593 & 0.609 & 0.602 \\
+ & combined ATE & 6.48 & 6.52 & 6.43 & 6.48 \\
+\path{f3_long_office_household} & mask-free ATE & 1.58 & 1.63 & 1.92 & 1.71 \\
+ & mask-free RPE & 0.454 & 0.457 & 0.458 & 0.456 \\
+ & combined ATE & 1.74 & 1.49 & 1.46 & 1.56 \\
+\bottomrule\end{tabular}\end{table}
+
+\subsubsection{S8.1 EXP59: six further out-of-sample sequences (per run)}
+
+
+A second pre-registered check (EXP59, 36 runs, sequences never used in any campaign; all rc=0) measured the same quantities on 6 fresh BONN sequences. 4/6 agree with the band prediction; the two misses (\path{balloon_tracking}, \path{balloon_tracking2}) are conservative-direction (the threshold would enable an unneeded mask); no RPE fell inside the fitted band and no counterexample ($N \le 0.8$) occurred. Verdict: \path{exp59_boundary_validation_verdict.md}.
+
+
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{llrrrr}\toprule
+sequence & arm & seed 0 & seed 1 & seed 2 & mean \\ \midrule
+\texttt{crowd3} & mask-free ATE & 6.51 & 14.56 & 12.16 & 11.08 \\
+ & mask-free RPE & 2.677 & 2.642 & 2.770 & 2.696 \\
+ & combined ATE & 1.59 & 1.53 & 1.62 & 1.58 \\
+\path{kidnapping_box} & mask-free ATE & 4.43 & 4.56 & 4.24 & 4.41 \\
+ & mask-free RPE & 1.510 & 1.485 & 1.491 & 1.495 \\
+ & combined ATE & 4.54 & 4.44 & 4.38 & 4.45 \\
+\path{kidnapping_box2} & mask-free ATE & 5.57 & 5.46 & 5.38 & 5.47 \\
+ & mask-free RPE & 1.404 & 1.394 & 1.392 & 1.397 \\
+ & combined ATE & 5.47 & 5.29 & 5.35 & 5.37 \\
+\path{balloon_tracking} & mask-free ATE & 5.51 & 5.16 & 5.36 & 5.34 \\
+ & mask-free RPE & 2.084 & 2.133 & 2.088 & 2.102 \\
+ & combined ATE & 6.01 & 5.89 & 5.95 & 5.95 \\
+\path{balloon_tracking2} & mask-free ATE & 22.76 & 24.57 & 27.98 & 25.10 \\
+ & mask-free RPE & 2.509 & 2.420 & 2.453 & 2.460 \\
+ & combined ATE & 18.58 & 25.21 & 26.66 & 23.48 \\
+\path{placing_nonobstructing_box} & mask-free ATE & 4.99 & 7.20 & 8.22 & 6.80 \\
+ & mask-free RPE & 2.094 & 3.047 & 3.034 & 2.725 \\
+ & combined ATE & 1.64 & 1.60 & 1.61 & 1.62 \\
+\bottomrule\end{tabular}\end{table}
+
+The verdict gate was unit-tested against known-bad inputs before the reading was trusted (empty input, a reverse-direction miss with all else agreeing, near-boundary vs far-boundary misses at the 4/5 rate, the 3/5 rate, the N and $\tau$ boundary values, and regression against the emitted verdict); a gate that never fails is not a gate. The four twice-executed cells carry both runs in \path{results/evidence/rpe_boundary_heldout.json} under \path{duplicate_runs_latest_rule}; under the first-run rule no cell changes classification, so the duplicate is a dispersion disclosure, not a provenance choice.
+
+
+The limits stated in the body travel unchanged: the check validates the threshold's \textbf{direction} (held-out RPE values 0.456--2.424 straddle but never enter the fitted band (1.572, 1.717), so the band's \emph{location} is untested); it remains a post-hoc diagnostic (computing RPE requires running the mask-free arm); and 5 sequences is descriptive, not a powered estimate.
+
+
+
+
+\subsection{S9. Static-scene degradation on Replica: full rendering numbers (Sec. 5.7 / S5)}
+
+
+S5 reports the Replica trajectory findings. The rendering metrics on the same runs corroborate the same direction (3-seed means, after-refinement re-render):
+
+
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{llrrrr}\toprule
+arm & sequence & PSNR$\uparrow$ & SSIM$\uparrow$ & LPIPS$\downarrow$ & depth-L1 (cm)$\downarrow$ \\ \midrule
+vanilla & \texttt{office0} & \textbf{43.0} & \textbf{0.983} & \textbf{0.043} & \textbf{4.4} \\
+combined & \texttt{office0} & 37.8 & 0.957 & 0.128 & 9.5 \\
+vanilla & \texttt{room0} & 35.5 & 0.956 & 0.078 & 5.7 \\
+combined & \texttt{room0} & 35.0 & 0.949 & 0.098 & 6.3 \\
+\bottomrule\end{tabular}\end{table}
+
+Consistent with the depth-L1-only corroboration rule of S5: on \texttt{office0} all four metrics agree with the trajectory ordering, and on \texttt{room0} the trajectory comparison is not quotable at all (both arms bistable), which is exactly the case where we decline to read rendering as rescue evidence. Evidence: the Replica seed verdict in \path{results/evidence/}.
+
+
+
+
+\subsection{S10. The cue-split factorial, in full (Limitations, Scope)}
+
+
+The Scope note of the Limitations section in the main text reports that the sequence-level semantic area, the simplest cue selector tested, does not separate the regimes. The evidence has two halves; the first is that which cue wins is regime-dependent, and the 48-run factorial behind it: the reliability signal's two cues (flow disagreement and geometry anomaly) were split into four tracking arms --- off, both (the multiplicative default), flow-only, geometry-only --- on the mask-free backbone, 4 sequences $\times$ 4 arms $\times$ 3 seeds, all runs completing. ATE in cm, mean $\pm$ sd (ddof = 1):
+
+
+\begin{table}[t]\centering\scriptsize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lrrrrl}\toprule
+sequence & off & both (default) & flow-only & geometry-only & lowest \\ \midrule
+\texttt{balloon} & 13.78$\pm$5.97 & 13.85$\pm$0.58 & 13.96$\pm$0.88 & {\boldmath$12.25\pm1.51$} & geo \\
+\path{mv_no_box} & 6.56$\pm$4.50 & {\boldmath$2.86\pm0.27$} & 4.12$\pm$0.60 & 3.70$\pm$0.68 & both \\
+\path{mv_no_box2} & 6.08$\pm$0.35 & 5.67$\pm$0.33 & 5.58$\pm$0.36 & {\boldmath$4.88\pm0.05$} & geo \\
+\texttt{pt2} & 10.91$\pm$0.52 & 9.18$\pm$1.12 & 10.04$\pm$0.87 & {\boldmath$8.78\pm0.43$} & geo \\
+\bottomrule\end{tabular}\end{table}
+
+Three readings, each with its own caveat. (1) Geometry-only takes the lowest mean on 3 of 4 sequences, which is why the body refuses to describe fixed multiplicative fusion as a universal kernel, but \path{mv_no_box} is the counterexample (both wins there by 0.84 cm), so geometry-only is not a global replacement either. (2) The single-seed screen that motivated the factorial had flow-only best on \texttt{balloon}; the 3-seed factorial reverses that (geometry best, flow worst), a direct instance of why the protocol requires 3 seeds, and why single-seed screening conclusions are never quoted in the body. (3) The off arm's large sd on two sequences (5.97 and 4.50) marks bistability of the \emph{unreliability-weighted} backbone, not dispersion of the measurement.
+
+The factorial ran on the mask-free backbone with coverage on, in its own campaign (P7), so its \emph{both} arm is an independent re-run of the mask-free configuration rather than the S12 cell: on \texttt{balloon} it reads 13.85$\pm$0.58 against S12's 12.11$\pm$2.33 (+14\%), on \path{mv_no_box} 2.86$\pm$0.27 against 3.10$\pm$0.46 ($-$8\%); both sit inside the drift discipline of S2.2, and S12 remains canonical.
+
+
+The second half of the limitation (the selector candidate we tested and rejected) is sequence-level semantic area: the both-preferring sequence (\path{mv_no_box}, 4.54\% mean person area) sits numerically \emph{between} two geometry-preferring sequences (\path{mv_no_box2} 3.30\%, \texttt{pt2} 8.24\%), so no threshold on that observable can separate the groups. Evidence: \path{results/evidence/archive_pre_exp32/wphs_person_area_characterization.md}; factorial preregistration and verdict: \texttt{results/evidence/p7\_cuesplit\_\{prereg,verdict\}.md}.
+
+
+
+
+\subsection{S11. Limits on reproduction and measurement}
+
+
+These are the limitations that constrain how our numbers should be reproduced or read, as opposed to the ones that constrain what we claim; the latter stay in the body (Sec. 6).
+
+
+\begin{enumerate}
+\item \textbf{Statistical scope.} 3 seeds per cell gives weak per-sequence intervals. Every comparison in this paper is descriptive and reproducible-in-direction. No claim of statistical significance or equivalence is made anywhere, and extremal pairings are ranges rather than confidence intervals. The support rule of Sec. 5.2 ($|$mean$| \ge 1$ sd at 3 seeds) corresponds to $|t| \ge \sqrt{3} \approx 1.73$ at df = 2, a two-sided false-positive rate near 23\% per cell under the null; across the 15 cells of Fig. 3 about three supported cells would be expected by chance, which is why the matrix is read as a whole and no single supported cell is quoted as a finding.
+\item \textbf{Cross-seed dispersion understates total dispersion}; see S5.
+\item \textbf{Rendering metrics do not corroborate trajectory claims}; see S5. We decline to use PSNR as evidence for a pose claim in either direction.
+\item \textbf{Map-side interpretation is bounded.} Inspecting the final Gaussian maps shows the count unchanged and opacity globally reduced, which is \emph{consistent with} background protection, but we did not classify Gaussians as dynamic or static, so we do not claim a demonstrated reduction of dynamic contamination.
+\item \textbf{A negative result on temporal aggregation.} Aggregating the reliability cue over multiple frames by a running median did not improve separation (it fell to 0.99 at K=8), so the per-frame estimate we report is not improved by the obvious temporal extension.
+\item \textbf{A negative result on residual-derived weights in the map loss.} A family of continuous per-pixel weights derived from the current model's own residuals ($\sigma$$^2$/$\lambda$$\mu$$^2$-type, replacing the binary admission decision in the mapping loss) was implemented and \textbf{closed by measurement}: across its two test sequences the best case showed no gain distinguishable from the noise floor and the worst case doubled the error (balloon, +100\%, 7.6$\times$ floor), with the arm \emph{always} less stable (spread 7.3$\times$ and 15.2$\times$ floor). The safe share of re-admitted dynamic pixels degenerated to $\le$1\%, narrower than the noise tolerance, i.e. indistinguishable from the hard mask it was meant to soften. The lesson recorded for future weight designs: any weight signal derived from the running model's residuals inherits that model's errors, so a usable soft-down-weighting route must first show it can push harmful observations below 1/100 of static weight; an exogenous signal (one that does not read the current model's residuals and is comparable across viewpoints) is a precondition. Evidence: \path{results/evidence/exp39c_ema_verdict_v3.md}.
+\item \textbf{Optical flow cost is outside the online figures}; see S5. We state this as an operating condition rather than folding it into a headline rate.
+\end{enumerate}
+
+
+\subsection{S12. Full 18-sequence table with all four arms (Sec. 5.1 of the main text)}
+
+
+The main text's Table 1 shows four selected BONN dynamic scenes for all methods; this is the complete 18-sequence table for our two arms, the vanilla backbone, and RGD-SLAM, with the dispersion flags used throughout (\dag{} vanilla CV > 20\%; \ddag{} the f3\_st\_hf training-budget exception, recoverable to 2.67$\pm$0.27 cm at async50 but degrading balloon to 13.96 cm). Body ratios are computed from full-precision per-run values, so they can differ in the last digit from quotients of the rounded values here.
+
+
+\begin{table}[H]\centering\tiny\setlength{\tabcolsep}{1pt}\renewcommand{\arraystretch}{0.72}
+\begin{tabular}{llllll}\toprule
+Sequence & Group & MonoGS & mask-free & combined & RGD \\ \midrule
+\texttt{crowd} & BONN crowd & 86.47$\pm$18.34\dag{} & 34.89$\pm$28.27 & {\boldmath$2.29\pm0.05$} & 2.61$\pm$0.28 \\
+\texttt{crowd2} & BONN crowd & 147.46$\pm$39.03\dag{} & 45.89$\pm$17.35 & {\boldmath$2.19\pm0.09$} & 2.36$\pm$0.06 \\
+\path{mv_no_box} & BONN object & 15.33$\pm$9.47\dag{} & 3.10$\pm$0.46 & 2.65$\pm$0.12 & {\boldmath$2.28\pm0.26$} \\
+\path{mv_no_box2} & BONN object & 16.84$\pm$16.96\dag{} & 5.62$\pm$0.30 & 5.14$\pm$0.28 & {\boldmath$4.70\pm0.24$} \\
+\texttt{balloon} & BONN mixed & 39.32$\pm$1.01 & 12.11$\pm$2.33 & 3.06$\pm$0.14 & {\boldmath$2.45\pm0.22$} \\
+\texttt{balloon2} & BONN mixed & 22.05$\pm$1.55 & 10.14$\pm$0.61 & 5.27$\pm$0.12 & {\boldmath$4.26\pm0.89$} \\
+\texttt{pt1} & BONN person & 44.83$\pm$9.06\dag{} & 32.41$\pm$8.52 & 11.89$\pm$2.36 & {\boldmath$7.21\pm1.24$} \\
+\texttt{pt2} & BONN person & 43.85$\pm$8.55 & {\boldmath$9.30\pm0.64$} & 10.45$\pm$0.84 & 22.99$\pm$3.66 \\
+\path{f2_person} & TUM dynamic & 6.30$\pm$0.40 & 6.79$\pm$0.18 & 7.34$\pm$0.25 & {\boldmath$6.11\pm0.22$} \\
+\path{f3_wk_hf} & TUM walking & 44.45$\pm$11.06\dag{} & 17.33$\pm$2.97 & 3.29$\pm$0.25 & {\boldmath$3.25\pm0.11$} \\
+\path{f3_wk_rpy} & TUM walking & 62.89$\pm$6.81 & 14.61$\pm$2.12 & 4.29$\pm$0.48 & {\boldmath$3.55\pm0.24$} \\
+\path{f3_wk_xyz} & TUM walking & 28.14$\pm$0.86 & 26.84$\pm$0.71 & 3.06$\pm$0.52 & {\boldmath$2.01\pm0.36$} \\
+\path{f3_st_hf} & TUM sitting & 2.80$\pm$0.92\dag{} & 35.59$\pm$0.47 & 29.43$\pm$8.00\ddag{} & {\boldmath$2.76\pm0.48$} \\
+\path{f3_st_rpy} & TUM sitting & 18.99$\pm$9.80\dag{} & 2.63$\pm$0.17 & {\boldmath$2.58\pm0.17$} & 2.90$\pm$0.34 \\
+\path{f3_st_xyz} & TUM sitting & {\boldmath$1.66\pm0.04$} & 2.66$\pm$0.64 & 4.69$\pm$0.71 & 2.03$\pm$0.38 \\
+\path{f1_desk} & TUM static & 1.47$\pm$0.08 & 1.49$\pm$0.05 & {\boldmath$1.39\pm0.04$} & 2.32$\pm$0.11 \\
+\path{f2_xyz} & TUM static & {\boldmath$1.66\pm0.13$} & 1.91$\pm$0.04 & 1.93$\pm$0.03 & 1.71$\pm$0.07 \\
+\path{f3_office} & TUM static & 1.65$\pm$0.05 & 1.59$\pm$0.02 & 1.55$\pm$0.11 & {\boldmath$1.42\pm0.06$} \\
+\bottomrule\end{tabular}\end{table}
+

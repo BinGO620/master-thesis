@@ -1,0 +1,9 @@
+# tectonic / latex build intermediates (main.pdf IS tracked: reviewers without a TeX
+# install should be able to read the draft straight from the repo)
+*.aux
+*.log
+*.bbl
+*.blg
+*.out
+*.toc
+*.synctex.gz

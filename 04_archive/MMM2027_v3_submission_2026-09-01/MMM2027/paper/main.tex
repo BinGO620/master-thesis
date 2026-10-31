@@ -1,0 +1,95 @@
+% RoGS-SLAM — MMM 2027 submission (Springer LNCS).
+%
+% Build: ./build.sh  ->  build/main.pdf, 14 pages (12 body + 2 references).
+%
+% Files: main.tex (this file) + body.tex + references.bib (29 entries) +
+%        llncs.cls + splncs04.bst. Figures in ../figures/.
+% This package is self-contained: nothing outside this directory is needed.
+%
+% Note: MMM 2027 has no supplementary-material channel; the SI is kept
+% separately in ../supplementary/ for internal use only.
+\documentclass[a4paper,runningheads]{llncs}
+
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+% figures live one level up; keep the generated body free of paths
+\graphicspath{{../figures/}}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{url}
+\usepackage{cite}
+\usepackage{needspace}
+
+% Float placement: the body's [t] figures are page-scale; with LaTeX's default
+% \topfraction=0.7 a figure plus its long caption exceeds the top-area budget
+% and every following float defers to the end of the document. Relax the caps
+% so figures place at (or near) their source page.
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.85}
+\setcounter{topnumber}{3}
+\setlength{\emergencystretch}{1.5em}
+\setcounter{totalnumber}{5}
+
+% Tighter float separation: keeps Sec. 7 Conclusion on page 12 so that the
+% reference-only allowance (max 2 pages) starts cleanly on page 13.
+\setlength{\textfloatsep}{4pt plus 1pt minus 1pt}
+\setlength{\abovecaptionskip}{2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\abovedisplayskip=5pt plus 1pt minus 1pt
+\belowdisplayskip=5pt plus 1pt minus 1pt
+\abovedisplayshortskip=3pt plus 1pt minus 1pt
+\belowdisplayshortskip=3pt plus 1pt minus 1pt
+
+\begin{document}
+
+\title{RoGS-SLAM: Robust Gaussian Splatting SLAM in Dynamic
+Environments via Reliability-Guided Weighting}
+\titlerunning{RoGS-SLAM: Robust Gaussian Splatting SLAM in Dynamic Environments}
+\author{Anonymous Author(s)}
+\authorrunning{Anonymous}
+\institute{Anonymous Institution(s)}
+
+\maketitle
+
+\begin{abstract}
+A moving object supplies residuals that a rigid-world estimator resolves by moving the
+camera: run unmodified on dynamic benchmarks, our 3D-Gaussian-splatting (3DGS) SLAM backbone
+drifts to 39--147 cm,
+against roughly 1.5 cm on static scenes. The dominant response detects movers with an
+external, class-conditioned network and discards them. We instead decide which pixels to
+trust from the disagreement between observed optical flow and the flow a rigid scene
+would produce, down-weighting rather than removing, and report the measurements that
+bound the result. A pre-registered 120-run factorial over three of its four components (uniform
+temporal keyframe coverage, robust residual reweighting, and a
+flow-consistency reliability signal; the density lifecycle is held fixed) finds that component necessity is
+\emph{regime-dependent}: no sequence demonstrably rewards all three, so the full
+bundle is nowhere strictly necessary in this design. A controlled counterpart given the
+same frozen flow improves on the baseline on only 2 of its 4 pilot-held-out sequences
+and is worse on one; our weighting improves on all four. Three pose-side endpoints
+expose a variance--bias trade that forces pose claims to name their endpoint. On the crowd scenes our combined
+(masked) configuration leads the RGB-D 3DGS class we reproduce under one protocol
+(2.2--2.3 cm ATE) at 4.0 GB, against 7.4 for RGD-SLAM. We give the per-frame observable marking where the mask-free configuration stops
+being sufficient, and claim no state-of-the-art accuracy.
+
+\keywords{Dynamic SLAM \and 3D Gaussian splatting \and Scene reconstruction \and Robust estimation.}
+\end{abstract}
+
+\input{body}
+
+
+\bibliographystyle{splncs04}
+% The reference list overflows the 2-page allowance by ~half a page; LNCS accepts
+% a compact reference list. Body font size stays uniform -- only the bibliography
+% is set in \small.
+% \clearpage keeps the two reference-only pages clean: content ends on page 12
+% (the Fig. 5 bottom float closes the page) and references start at the top of
+% page 13.
+\clearpage
+\small\setlength{\itemsep}{0pt}
+\bibliography{references}
+
+\enlargethispage{12\baselineskip}
+\end{document}

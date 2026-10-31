@@ -1,0 +1,141 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\providecommand{\doi}[1]{https://doi.org/#1}
+
+\bibitem{dynaslam}
+Bescos, B., F{\'a}cil, J.M., Civera, J., Neira, J.: {DynaSLAM}: Tracking,
+  mapping and inpainting in dynamic scenes. IEEE Robotics and Automation
+  Letters  \textbf{3}(4),  4076--4083 (2018)
+
+\bibitem{evo}
+Grupp, M.: evo: Python package for the evaluation of odometry and {SLAM}.
+  \url{https://github.com/MichaelGrupp/evo} (2017)
+
+\bibitem{maskrcnn}
+He, K., Gkioxari, G., Doll{\'a}r, P., Girshick, R.: Mask {R-CNN}. In: IEEE
+  ICCV. pp. 2980--2988 (2017)
+
+\bibitem{huber}
+Huber, P.J.: Robust estimation of a location parameter. The Annals of
+  Mathematical Statistics  \textbf{35}(1),  73--101 (1964)
+
+\bibitem{rodynslam}
+Jiang, H., Xu, Y., Li, K., Feng, J., Zhang, L.: {RoDyn-SLAM}: Robust dynamic
+  dense {RGB-D} {SLAM} with neural radiance fields. IEEE Robotics and
+  Automation Letters  \textbf{9}(9),  7509--7516 (2024)
+
+\bibitem{splatam}
+Keetha, N., Karhade, J., Jatavallabhula, K.M., Yang, G., Scherer, S., Ramanan,
+  D., Luiten, J.: {SplaTAM}: Splat, track \& map {3D} {G}aussians for dense
+  {RGB-D} {SLAM}. In: IEEE/CVF CVPR. pp. 21357--21366 (2024)
+
+\bibitem{3dgs}
+Kerbl, B., Kopanas, G., Leimk{\"u}hler, T., Drettakis, G.: {3D} {G}aussian
+  splatting for real-time radiance field rendering. ACM Transactions on
+  Graphics  \textbf{42}(4),  1--14 (2023)
+
+\bibitem{dgsslamkong}
+Kong, M., Lee, J., Lee, S., Kim, E.: {DGS-SLAM}: {G}aussian splatting {SLAM} in
+  dynamic environment (2024), arXiv:2411.10722
+
+\bibitem{garadslam}
+Li, M., Chen, W., Cheng, N., Xu, J., Li, D., Wang, H.: {GARAD-SLAM}: {3D}
+  {GA}ussian splatting for real-time anti dynamic {SLAM}. In: IEEE ICRA. pp.
+  11047--11053 (2025)
+
+\bibitem{dy3dgsslam}
+Li, M., Zhou, Y., Zhou, H., Hu, X., Roemer, F., Wang, H., Osman, A.:
+  {Dy3DGS-SLAM}: Monocular {3D} {G}aussian splatting {SLAM} for dynamic
+  environments. In: IEEE ICRA. pp. 14572--14578 (2025)
+
+\bibitem{dynagslam}
+Li, R.B., Shaghaghi, M., Suzuki, K., Liu, X., Moparthi, V., Du, B., Curtis, W.,
+  Renschler, M., Lee, K.M.B., Atanasov, N., Nguyen, T.: {DynaGSLAM}: Real-time
+  {G}aussian-splatting {SLAM} for online rendering, tracking, motion
+  predictions of moving objects in dynamic scenes (2025), arXiv:2503.11979; to
+  appear, WACV 2026
+
+\bibitem{monogs}
+Matsuki, H., Murai, R., Kelly, P.H.J., Davison, A.J.: Gaussian splatting
+  {SLAM}. In: IEEE/CVF CVPR. pp. 18039--18048 (2024)
+
+\bibitem{bonn}
+Palazzolo, E., Behley, J., Lottes, P., Gigu{\`e}re, P., Stachniss, C.:
+  {ReFusion}: {3D} reconstruction in dynamic environments for {RGB-D} cameras
+  exploiting residuals. In: IEEE/RSJ IROS. pp. 7855--7862 (2019)
+
+\bibitem{sam2}
+Ravi, N., Gabeur, V., Hu, Y.T., Hu, R., Ryali, C., Ma, T., Khedr, H.,
+  R{\"a}dle, R., Rolland, C., Gustafson, L., Mintun, E., Pan, J., Alwala, K.V.,
+  Carion, N., Wu, C.Y., Girshick, R., Misra, I., Doll{\'a}r, P., Feichtenhofer,
+  C.: {SAM 2}: Segment anything in images and videos. In: ICLR (2025)
+
+\bibitem{replica}
+Straub, J., Whelan, T., Ma, L., Chen, Y., Wijmans, E., Green, S., Engel, J.,
+  Mur-Artal, R., Ren, C., Verma, S., Clarkson, A., Yan, M., Bao, B., Goode, Y.,
+  Newcombe, R., Izadi, S.: The {Replica} dataset: A digital replica of indoor
+  scenes. arXiv preprint arXiv:1906.05797  (2019)
+
+\bibitem{tumrgbd}
+Sturm, J., Engelhard, N., Endres, F., Burgard, W., Cremers, D.: A benchmark for
+  the evaluation of {RGB-D} {SLAM} systems. In: IEEE/RSJ IROS. pp. 573--580
+  (2012)
+
+\bibitem{raft}
+Teed, Z., Deng, J.: {RAFT}: Recurrent all-pairs field transforms for optical
+  flow. In: ECCV. pp. 402--419 (2020)
+
+\bibitem{droidslam}
+Teed, Z., Deng, J.: {DROID-SLAM}: Deep visual {SLAM} for monocular, stereo, and
+  {RGB-D} cameras. In: NeurIPS. vol.~34, pp. 16558--16571 (2021)
+
+\bibitem{umeyama}
+Umeyama, S.: Least-squares estimation of transformation parameters between two
+  point patterns. IEEE Transactions on Pattern Analysis and Machine
+  Intelligence  \textbf{13}(4),  376--380 (1991)
+
+\bibitem{rgdslam}
+Wang, H., Shou, Y., Shen, L., Li, S., Cao, Y.: {RGD-SLAM}: Robust {G}aussian
+  splatting {SLAM} for dynamic environments. Pattern Recognition  \textbf{175},
+   113071 (2026)
+
+\bibitem{coslam}
+Wang, H., Wang, J., Agapito, L.: {Co-SLAM}: Joint coordinate and sparse
+  parametric encodings for neural real-time {SLAM}. In: IEEE/CVF CVPR. pp.
+  13293--13302 (2023)
+
+\bibitem{gassidy}
+Wen, L., Li, S., Zhang, Y., Huang, Y., Lin, J., Pan, F., Bing, Z., Knoll, A.:
+  Gassidy: {G}aussian splatting {SLAM} in dynamic environments. In: IEEE ICRA.
+  pp. 8471--8477 (2025)
+
+\bibitem{dgslam}
+Xu, Y., Jiang, H., Xiao, Z., Feng, J., Zhang, L.: {DG-SLAM}: Robust dynamic
+  {G}aussian splatting {SLAM} with hybrid pose optimization. In: NeurIPS.
+  vol.~37, pp. 51577--51596 (2024)
+
+\bibitem{bdgsslam}
+Yang, T., Wei, S., Nan, J., Li, M., Li, M.: {BDGS-SLAM}: A probabilistic {3D}
+  {G}aussian splatting framework for robust {SLAM} in dynamic environments.
+  Sensors  \textbf{25}, ~6641 (2025)
+
+\bibitem{dagsslam}
+Zhang, L., Liu, Y.A., Jiang, X., Huang, C., Li, D., Zhang, Y.: {DAGS-SLAM}:
+  Dynamic-aware {3DGS} {SLAM} via spatiotemporal motion probability and
+  uncertainty-aware scheduling (2026), arXiv:2602.21644
+
+\bibitem{ngdslam}
+Zhang, Y., Bujanca, M., Luj{\'a}n, M.: {NGD-SLAM}: Towards real-time dynamic
+  {SLAM} without {GPU}. In: IEEE/RSJ IROS. pp. 3467--3473 (2025)
+
+\bibitem{zhang}
+Zhang, Z.: Parameter estimation techniques: A tutorial with application to
+  conic fitting. Image and Vision Computing  \textbf{15}(1),  59--76 (1997)
+
+\bibitem{wildgsslam}
+Zheng, J., Zhu, Z., Bieri, V., Pollefeys, M., Peng, S., Armeni, I.:
+  {WildGS-SLAM}: Monocular {G}aussian splatting {SLAM} in dynamic environments.
+  In: IEEE/CVF CVPR. pp. 11461--11471 (2025)
+
+\end{thebibliography}

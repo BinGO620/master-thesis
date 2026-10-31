@@ -1,0 +1,72 @@
+% MRCS v2 manuscript build (Springer LNCS, llncs.cls).
+%
+% The body is machine-generated from ../manuscript.md by scripts/md2latex_manuscript.py
+% (output: body_v2.tex); figures come from ../figures/ and the bibliography from
+% references.bib (22 entries, all verified). Regenerate the body after editing the
+% markdown, then compile with ./compile_v2.sh (tectonic + BibTeX).
+%
+% NOTE: this is a page-budget build, not yet the submission file -- the venue limit
+% is 12 pages body + 2 pages references and this build currently exceeds it.
+%
+% Build:  conda run -n tex tectonic papers/maskfree_bundle/latex/main_v2.tex (or ./compile_v2.sh)
+\documentclass[runningheads]{llncs}
+
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+% figures live one level up; keep the generated body free of paths
+\graphicspath{{../figures/}}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{cite}
+
+% Float placement: the body's [t] figures are page-scale; with LaTeX's default
+% \topfraction=0.7 a figure plus its long caption exceeds the top-area budget
+% and every following float defers to the end of the document. Relax the caps
+% so figures place at (or near) their source page.
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.85}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{5}
+
+\begin{document}
+
+\title{MRCS: Reliability-Guided Coverage Sampling for
+Dynamic 3D Gaussian Splatting SLAM}
+\titlerunning{Reliability-Guided Coverage Sampling for Dynamic 3DGS SLAM}
+\author{Anonymous Submission}
+\authorrunning{Anonymous}
+\institute{Anonymous Institution}
+
+\maketitle
+
+\begin{abstract}
+Dynamic content breaks RGB-D SLAM in a specific way: a moving object supplies residuals
+that a rigid-world estimator resolves by moving the camera. Run unmodified, our
+3DGS-SLAM backbone drifts to $39.32\pm1.01$ cm on a mixed-mover sequence and
+$147.5\pm39.0$ cm on a crowded one, against roughly 1.5 cm on static scenes. The
+dominant response detects movers with an external class-conditioned network and discards
+them, inheriting a second model's cost and failure modes, and is closed-set. We instead
+decide which pixels to trust from the disagreement between observed optical flow and the
+flow a rigid scene would produce, down-weighting rather than removing, and report the
+measurements that bound the result. A pre-registered three-factor factorial (120 runs) finds that component
+necessity is \emph{regime-dependent}: no sequence needs all three components, and uniform
+keyframe coverage is harmful on the mixed-mover scene. A controlled
+counterpart consuming byte-identical frozen flow through a naive threshold is unstable
+where ours is not, closing the reading that the gain follows from the extra information.
+Three pose-side endpoints, one a directly measured intermediate quantity, show a
+variance-bias trade in which per-frame tracking worsens while the trajectory improves. We
+give the boundary where our mask-free configuration stops being sufficient, and claim no
+state-of-the-art accuracy.
+
+\keywords{Dynamic SLAM \and 3D Gaussian splatting \and Robust estimation.}
+\end{abstract}
+
+\input{body_v2}
+
+\bibliographystyle{splncs04}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,62 @@
+% main.tex — 济南大学硕士学位论文主文件
+%
+% 编译：./build.sh           （或 xelatex main.tex 跑两遍 + bibtex + 两遍）
+% 产物：build/main.pdf
+%
+% 结构约定：
+%   frontmatter/  封面、声明、中英文摘要、目录
+%   chapters/     正文章节，一章一个文件
+%   refs/         参考文献库
+%   figures/      图
+%
+% 正文里每个实验数字都要能追溯到工件，来源注释写在数字旁边。
+% 动笔前先读 WRITING_RULES.md。
+
+\documentclass[UTF8, zihao=-4, openany]{ctexbook}
+
+\usepackage{ujnthsis}
+\usepackage{xeCJK}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = black,
+  citecolor  = black,
+  urlcolor   = black,
+  bookmarksnumbered = true,
+}
+\usepackage{cleveref}   % 交叉引用自动带「图/表」字样，正文写 \cref{fig:x} 即可
+
+\thesistitle{基于 3D 高斯泼溅的动态场景 SLAM 研究}
+% ↑ 题目是占位，定稿后替换（会同步到偶数页页眉）
+
+% 参考文献走 bibtex + gbt7714（国标），不用 biblatex。
+% 文献库见 refs/references.bib。
+
+\begin{document}
+
+% ---------------------------------------------------------------- 前置部分
+\frontmatterpagenumbering
+\input{frontmatter/cover}
+\input{frontmatter/declaration}
+\input{frontmatter/abstract}
+\tableofcontents
+
+% ---------------------------------------------------------------- 正文
+\mainmatterpagenumbering
+
+\input{chapters/ch1_introduction}
+\input{chapters/ch2_related_work}
+
+% 三个研究内容，各占一章。⚠ 章节划分尚未定稿，见 03_main/OUTLINE.md。
+\input{chapters/ch3_study1}
+\input{chapters/ch4_study2}
+\input{chapters/ch5_study3}
+
+\input{chapters/ch6_conclusion}
+
+% ---------------------------------------------------------------- 后置部分
+\input{frontmatter/bibliography}
+\input{frontmatter/acknowledgement}
+\input{frontmatter/appendix}
+
+\end{document}

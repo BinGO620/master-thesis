@@ -1,0 +1,13 @@
+{
+  "round": 1,
+  "agent": "codex-mcp-gpt-5.6-sol",
+  "threadId": "019fdd53-ba7e-7572-ad05-448065b2b984",
+  "status": "in_progress",
+  "last_score": "A=borderline/B-weaker/C-dead",
+  "last_verdict": "not ready (A viable only as empirical/system-char paper)",
+  "pending_experiments": [
+    "matched-rate deletion controls (random/high-op/low-op at same removal fraction on all PLYs)",
+    "artifact-level savings (serialized bytes, load time, render time before/after, CI)"
+  ],
+  "timestamp": "2026-08-07T23:55:00"
+}

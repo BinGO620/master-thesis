@@ -1,0 +1,38 @@
+% frontmatter/cover.template.tex — 封面（占位，字段待填）
+%
+% 官方模板的封面字段（照抄自 02_resources/ujn_biyelunwen_muban 里的 .doc）：
+%   分类号（参考《中国图书馆分类法》，查询网站 https://www.clcindex.com/）
+%   学号 / 密级（公开、内部、秘密、机密、绝密）
+%   「硕 士 学 位 论 文（学 术 学 位）」字样
+%   中文题目（宋体小二，副标题小三，居中）、英文题目（Times 小二/小三，粗体）
+%   作者姓名、导师姓名（四号 Times，粗体）
+%   学科专业、研究方向、培养单位等（四号，分散对齐 / 小三楷体）
+%   日期
+%
+% 这一页最终交付时建议在 Word 里对着官方 .doc 排版，或等我们把封面字段
+%    全部核对完再数字化成 LaTeX。现在先用一个能编译的占位版。
+
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\heiti\zihao{2} 硕 士 学 位 论 文}\\[0.3cm]
+{\heiti\zihao{3}（学 术 学 位）}\\[2cm]
+
+{\songti\zihao{2} 基于 3D 高斯泼溅的动态场景 SLAM 研究}\\[2cm]
+
+\begin{spacing}{1.8}
+{\songti\zihao{4}
+\begin{tabular}{rl}
+学\quad\quad 号 & \underline{\makebox[5cm]{}} \\
+论文作者 & \underline{\makebox[5cm]{陈\quad 彬}} \\
+指导教师 & \underline{\makebox[5cm]{苏\quad 洁}} \\
+学科专业 & \underline{\makebox[5cm]{计算机科学与技术}} \\
+研究方向 & \underline{\makebox[5cm]{视觉 SLAM}} \\
+培养单位 & \underline{\makebox[5cm]{}} \\
+\end{tabular}}
+\end{spacing}
+
+\vfill
+{\songti\zihao{3} 二〇二六年\quad 月}
+\end{titlepage}

@@ -1,0 +1,292 @@
+% References for the MRCS manuscript (MMM / Springer LNCS).
+%
+% RULE: every entry below is grounded in the PDF under resources/01-references/ or in the
+% arXiv record. Where the PDF does not itself state the publication venue, the entry is kept
+% as an arXiv eprint and marked TODO-VENUE -- an eprint entry is never wrong, only less
+% specific. DO NOT "upgrade" a TODO-VENUE entry from memory; check the record first.
+% (Project rule: a citation asserted from recollection is a fabricated citation.)
+
+% ---------------- backbone & 3DGS ----------------
+@article{3dgs,
+  title   = {{3D} {G}aussian Splatting for Real-Time Radiance Field Rendering},
+  author  = {Kerbl, Bernhard and Kopanas, Georgios and Leimk{\"u}hler, Thomas and
+             Drettakis, George},
+  journal = {ACM Transactions on Graphics},
+  volume  = {42},
+  number  = {4},
+  pages   = {1--14},
+  year    = {2023},
+}
+
+@article{orbslam3,
+  title   = {{ORB-SLAM3}: An Accurate Open-Source Library for Visual, Visual-Inertial and
+             Multi-Map {SLAM}},
+  author  = {Campos, Carlos and Elvira, Richard and Rodr{\'i}guez, Juan J. G{\'o}mez and
+             Montiel, Jos{\'e} M. M. and Tard{\'o}s, Juan D.},
+  journal = {IEEE Transactions on Robotics},
+  volume  = {37},
+  number  = {6},
+  pages   = {1874--1890},
+  year    = {2021},
+}
+
+@inproceedings{monogs,
+  title     = {Gaussian Splatting {SLAM}},
+  author    = {Matsuki, Hidenobu and Murai, Riku and Kelly, Paul H. J. and Davison, Andrew J.},
+  booktitle = {IEEE/CVF CVPR},
+  pages     = {18039--18048},
+  year      = {2024},
+}
+
+@inproceedings{splatam,
+  title     = {{SplaTAM}: Splat, Track \& Map {3D} {G}aussians for Dense {RGB-D} {SLAM}},
+  author    = {Keetha, Nikhil and Karhade, Jay and Jatavallabhula, Krishna Murthy and
+               Yang, Gengshan and Scherer, Sebastian and Ramanan, Deva and Luiten, Jonathon},
+  booktitle = {IEEE/CVF CVPR},
+  pages     = {21357--21366},
+  year      = {2024},
+}
+
+@inproceedings{coslam,
+  title     = {{Co-SLAM}: Joint Coordinate and Sparse Parametric Encodings for
+               Neural Real-Time {SLAM}},
+  author    = {Wang, Hengyi and Wang, Jingwen and Agapito, Lourdes},
+  booktitle = {IEEE/CVF CVPR},
+  pages     = {13293--13302},
+  year      = {2023},
+}
+
+% ---------------- dynamic 3DGS SLAM ----------------
+@inproceedings{dgslam,
+  title     = {{DG-SLAM}: Robust Dynamic {G}aussian Splatting {SLAM} with Hybrid Pose Optimization},
+  author    = {Xu, Yueming and Jiang, Haochen and Xiao, Zhongyang and Feng, Jianfeng and Zhang, Li},
+  booktitle = {NeurIPS},
+  volume    = {37},
+  pages     = {51577--51596},
+  year      = {2024},
+}
+
+@article{rgdslam,
+  title   = {{RGD-SLAM}: Robust {G}aussian splatting {SLAM} for dynamic environments},
+  author  = {Wang, Haocheng and Shou, Yejun and Shen, Lingfeng and Li, Shuai and Cao, Yanlong},
+  journal = {Pattern Recognition},
+  volume  = {175},
+  pages   = {113071},
+  year    = {2026},
+}
+
+@inproceedings{wildgsslam,
+  title     = {{WildGS-SLAM}: Monocular {G}aussian Splatting {SLAM} in Dynamic Environments},
+  author    = {Zheng, Jianhao and Zhu, Zihan and Bieri, Valentin and Pollefeys, Marc and
+               Peng, Songyou and Armeni, Iro},
+  booktitle = {IEEE/CVF CVPR},
+  pages     = {11461--11471},
+  year      = {2025},
+}
+
+@misc{dynagslam,
+  title  = {{DynaGSLAM}: Real-Time {G}aussian-Splatting {SLAM} for Online Rendering,
+            Tracking, Motion Predictions of Moving Objects in Dynamic Scenes},
+  author = {Li, Runfa Blark and Shaghaghi, Mahdi and Suzuki, Keito and Liu, Xinshuang and
+            Moparthi, Varun and Du, Bang and Curtis, Walker and Renschler, Martin and
+            Lee, Ki Myung Brian and Atanasov, Nikolay and Nguyen, Truong},
+  note   = {arXiv:2503.11979; to appear, WACV 2026},
+  year   = {2025}
+}
+
+@article{bdgsslam,
+  title   = {{BDGS-SLAM}: A Probabilistic {3D} {G}aussian Splatting Framework for
+             Robust {SLAM} in Dynamic Environments},
+  author  = {Yang, Tianyu and Wei, Shuangfeng and Nan, Jingxuan and Li, Mingyang and Li, Mingrui},
+  journal = {Sensors},
+  volume  = {25},
+  pages   = {6641},
+  year    = {2025},
+}
+
+@misc{dagsslam,
+  title  = {{DAGS-SLAM}: Dynamic-Aware {3DGS} {SLAM} via Spatiotemporal Motion Probability
+            and Uncertainty-Aware Scheduling},
+  author = {Zhang, Li and Liu, Yu-An and Jiang, Xijia and Huang, Conghao and Li, Danyang and
+            Zhang, Yanyong},
+  year   = {2026},
+  note   = {arXiv:2602.21644},
+  eprint = {2602.21644},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.RO}
+}
+
+% ---------------- pre-3DGS dynamic SLAM ----------------
+@article{dynaslam,
+  title   = {{DynaSLAM}: Tracking, Mapping and Inpainting in Dynamic Scenes},
+  author  = {Bescos, Berta and F{\'a}cil, Jos{\'e} M. and Civera, Javier and Neira, Jos{\'e}},
+  journal = {IEEE Robotics and Automation Letters},
+  volume  = {3},
+  number  = {4},
+  pages   = {4076--4083},
+  year    = {2018},
+}
+
+@inproceedings{ngdslam,
+  title     = {{NGD-SLAM}: Towards Real-Time Dynamic {SLAM} without {GPU}},
+  author    = {Zhang, Yuhao and Bujanca, Mihai and Luj{\'a}n, Mikel},
+  booktitle = {IEEE/RSJ IROS},
+  year      = {2025},
+  pages     = {3467--3473},
+}
+
+@article{rodynslam,
+  title   = {{RoDyn-SLAM}: Robust Dynamic Dense {RGB-D} {SLAM} with Neural Radiance Fields},
+  author  = {Jiang, Haochen and Xu, Yueming and Li, Kejie and Feng, Jianfeng and Zhang, Li},
+  journal = {IEEE Robotics and Automation Letters},
+  volume  = {9},
+  number  = {9},
+  pages   = {7509--7516},
+  year    = {2024},
+}
+
+% ---------------- external modules the related work depends on ----------------
+@inproceedings{sam2,
+  title     = {{SAM 2}: Segment Anything in Images and Videos},
+  author    = {Ravi, Nikhila and Gabeur, Valentin and Hu, Yuan-Ting and Hu, Ronghang and
+               Ryali, Chaitanya and Ma, Tengyu and Khedr, Haitham and R{\"a}dle, Roman and
+               Rolland, Chloe and Gustafson, Laura and Mintun, Eric and Pan, Junting and
+               Alwala, Kalyan Vasudev and Carion, Nicolas and Wu, Chao-Yuan and
+               Girshick, Ross and Misra, Ishan and Doll{\'a}r, Piotr and
+               Feichtenhofer, Christoph},
+  booktitle = {ICLR},
+  year      = {2025}
+}
+
+@article{huber,
+  title   = {Robust Estimation of a Location Parameter},
+  author  = {Huber, Peter J.},
+  journal = {The Annals of Mathematical Statistics},
+  volume  = {35},
+  number  = {1},
+  pages   = {73--101},
+  year    = {1964},
+}
+
+@article{zhang,
+  title   = {Parameter Estimation Techniques: A Tutorial with Application to Conic
+             Fitting},
+  author  = {Zhang, Zhengyou},
+  journal = {Image and Vision Computing},
+  volume  = {15},
+  number  = {1},
+  pages   = {59--76},
+  year    = {1997},
+}
+
+@article{umeyama,
+  title   = {Least-Squares Estimation of Transformation Parameters Between Two Point
+             Patterns},
+  author  = {Umeyama, Shinji},
+  journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  volume  = {13},
+  number  = {4},
+  pages   = {376--380},
+  year    = {1991},
+}
+
+@inproceedings{droidslam,
+  title     = {{DROID-SLAM}: Deep Visual {SLAM} for Monocular, Stereo, and {RGB-D} Cameras},
+  author    = {Teed, Zachary and Deng, Jia},
+  booktitle = {NeurIPS},
+  volume    = {34},
+  pages     = {16558--16571},
+  year      = {2021}
+}
+
+@inproceedings{raft,
+  title     = {{RAFT}: Recurrent All-Pairs Field Transforms for Optical Flow},
+  author    = {Teed, Zachary and Deng, Jia},
+  booktitle = {ECCV},
+  pages     = {402--419},
+  year      = {2020},
+}
+
+@inproceedings{maskrcnn,
+  title     = {Mask {R-CNN}},
+  author    = {He, Kaiming and Gkioxari, Georgia and Doll{\'a}r, Piotr and Girshick, Ross},
+  booktitle = {IEEE ICCV},
+  pages     = {2980--2988},
+  year      = {2017},
+}
+
+% ---------------- datasets & tools ----------------
+@inproceedings{tumrgbd,
+  title     = {A Benchmark for the Evaluation of {RGB-D} {SLAM} Systems},
+  author    = {Sturm, J{\"u}rgen and Engelhard, Nikolas and Endres, Felix and
+               Burgard, Wolfram and Cremers, Daniel},
+  booktitle = {IEEE/RSJ IROS},
+  pages     = {573--580},
+  year      = {2012},
+}
+
+@inproceedings{bonn,
+  title     = {{ReFusion}: {3D} Reconstruction in Dynamic Environments for {RGB-D} Cameras
+               Exploiting Residuals},
+  author    = {Palazzolo, Emanuele and Behley, Jens and Lottes, Philipp and
+               Gigu{\`e}re, Philippe and Stachniss, Cyrill},
+  booktitle = {IEEE/RSJ IROS},
+  pages     = {7855--7862},
+  year      = {2019},
+}
+
+@misc{evo,
+  title  = {evo: Python package for the evaluation of odometry and {SLAM}},
+  author = {Grupp, Michael},
+  year   = {2017},
+  howpublished = {\url{https://github.com/MichaelGrupp/evo}}
+}
+
+% -------- consistency-driven dynamic 3DGS SLAM (PDFs verified 2026-08-16, exp23) --------
+@inproceedings{gassidy,
+  title     = {Gassidy: {G}aussian Splatting {SLAM} in Dynamic Environments},
+  author    = {Wen, Long and Li, Shixin and Zhang, Yu and Huang, Yuhong and Lin, Jianjie and
+               Pan, Fengjunjie and Bing, Zhenshan and Knoll, Alois},
+  booktitle = {IEEE ICRA},
+  pages     = {8471--8477},
+  year      = {2025},
+}
+
+@inproceedings{garadslam,
+  title     = {{GARAD-SLAM}: {3D} {GA}ussian splatting for Real-time Anti Dynamic {SLAM}},
+  author    = {Li, Mingrui and Chen, Weijian and Cheng, Na and Xu, Jingyuan and Li, Dong and
+               Wang, Hongyu},
+  booktitle = {IEEE ICRA},
+  pages     = {11047--11053},
+  year      = {2025},
+}
+
+@misc{dgsslamkong,
+  title  = {{DGS-SLAM}: {G}aussian Splatting {SLAM} in Dynamic Environment},
+  author = {Kong, Mangyu and Lee, Jaewon and Lee, Seongwon and Kim, Euntai},
+  year   = {2024},
+  note   = {arXiv:2411.10722},
+  eprint = {2411.10722},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.RO}
+}
+
+@inproceedings{dy3dgsslam,
+  title     = {{Dy3DGS-SLAM}: Monocular {3D} {G}aussian Splatting {SLAM} for Dynamic Environments},
+  author    = {Li, Mingrui and Zhou, Yiming and Zhou, Hongxing and Hu, Xinggang and
+               Roemer, Florian and Wang, Hongyu and Osman, Ahmad},
+  booktitle = {IEEE ICRA},
+  pages     = {14572--14578},
+  year      = {2025},
+}
+
+@article{replica,
+  author  = {Straub, Julian and Whelan, Thomas and Ma, Lingfei and Chen, Yufan
+             and Wijmans, Erik and Green, Simon and Engel, Jakob and
+             Mur-Artal, Raul and Ren, Carl and Verma, Shobhit and Clarkson,
+             Anurag and Yan, Mingfei and Bao, Brian and Goode, Yajie and
+             Newcombe, Richard and Izadi, Shahram},
+  title   = {The {Replica} Dataset: A Digital Replica of Indoor Scenes},
+  journal = {arXiv preprint arXiv:1906.05797},
+  year    = {2019}
+}
