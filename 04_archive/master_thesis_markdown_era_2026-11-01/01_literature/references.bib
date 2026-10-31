@@ -1,0 +1,346 @@
+% references.bib — 学位论文参考文献库
+% 注意（导师开题意见 #3）：最终论文里参考文献按正文首次引用顺序从 1 编号，
+% bib key 用语义名，排序在定稿期由工具处理。
+% 条目均为 2026-09-05 经 arXiv 元数据核实（作者/年份/标题逐一比对）。
+
+% ============ anti-dynamic：动态即干扰 ============
+
+@article{wildgsslam2025,
+  author  = {Zheng, Jianhao and Zhu, Zihan and Bieri, Valentin and Pollefeys, Marc and Peng, Songyou and Armeni, Iro},
+  title   = {WildGS-SLAM: Monocular Gaussian Splatting SLAM in Dynamic Environments},
+  journal = {arXiv preprint arXiv:2504.03886},
+  year    = {2025},
+  note    = {CVPR 2025; DINOv2 features + uncertainty MLP; Bonn avg 2.31cm (ablation w/o disparity reg: 10.97cm)}
+}
+
+@article{roseslam2026,
+  author  = {Wang, Wenting and Guo, Jiaxin and Dong, Wenzhen and Liu, Yun-Hui and Wang, Charlie C. L. and Yam, Yeung},
+  title   = {RoSe-SLAM: Robust Semantic-Aware Gaussian Splatting SLAM from Dynamic Monocular Videos},
+  journal = {arXiv preprint arXiv:2608.29003},
+  year    = {2026},
+  note    = {2D foundation-model semantic distillation into Gaussian fields; evaluated on TUM/Bonn/Wild-Mocap}
+}
+
+@article{dy3dgsslam2025,
+  author  = {Li, Mingrui and Zhou, Yiming and Zhou, Hongxing and Hu, Xinggang and Roemer, Florian and Wang, Hongyu and Osman, Ahmad},
+  title   = {Dy3DGS-SLAM: Monocular 3D Gaussian Splatting SLAM for Dynamic Environments},
+  journal = {arXiv preprint arXiv:2506.05965},
+  year    = {2025},
+  note    = {首个纯 RGB 单目动态 3DGS SLAM；光流掩码+深度掩码概率融合}
+}
+
+@article{ggdslam2026,
+  author  = {Liu, Yi and Xu, Haoxuan and Duan, Hongbo and Fan, Keyu and Zhang, Zhengyang and Zhuang, Peiyu and Luo, Pengting and Liu, Houde},
+  title   = {GGD-SLAM: Monocular 3DGS SLAM Powered by Generalizable Motion Model for Dynamic Environments},
+  journal = {arXiv preprint arXiv:2604.12837},
+  year    = {2026},
+  note    = {可泛化运动模型，无需语义标注与深度输入；FIFO+序贯注意力}
+}
+
+@article{mope2026,
+  author  = {Xiao, Qixin},
+  title   = {MoPe: Motion Permanence for Robust Monocular Gaussian Mapping in Dynamic Environments},
+  journal = {arXiv preprint arXiv:2606.29237},
+  year    = {2026},
+  note    = {运动永续性原则：SE(3) warping 传播历史动态后验 + 贝叶斯 log-odds 融合；动态感知高斯插入}
+}
+
+@article{dlslam2026,
+  author  = {Xu, Ziheng and Li, Qingfeng and Liu, Xuefeng and Chen, Chen and Niu, Jianwei},
+  title   = {DL-SLAM: Enabling High-Fidelity Gaussian Splatting SLAM in Dynamic Environments based on Dual-Level Probability},
+  journal = {arXiv preprint arXiv:2607.01860},
+  year    = {2026},
+  note    = {像素→物体级双层概率；object-level categorical pruning；跟踪精度提升至 13%}
+}
+
+% ============ face-dynamic：显式建模动态（4D/变形场） ============
+
+@article{dynagslam2026,
+  author  = {Li, Runfa Blark and Shaghaghi, Mahdi and Suzuki, Keito and Liu, Xinshuang and Moparthi, Varun and Du, Bang and Curtis, Walker and Renschler, Martin and Lee, Ki Myung Brian and Atanasov, Nikolay and Nguyen, Truong},
+  title   = {DynaGSLAM: Real-Time Gaussian-Splatting SLAM for Online Rendering, Tracking, Motion Predictions of Moving Objects in Dynamic Scenes},
+  journal = {arXiv preprint arXiv:2503.11979},
+  year    = {2026},
+  note    = {WACV 2026；首个实时动态 GS-SLAM，含运动预测}
+}
+
+@article{d4dgsslam2025,
+  author  = {Sun, Zhicong and Lo, Jacqueline and Hu, Jinxing},
+  title   = {Embracing Dynamics: Dynamics-aware 4D Gaussian Splatting SLAM},
+  journal = {arXiv preprint arXiv:2504.04844},
+  year    = {2025},
+  note    = {D4DGS-SLAM，首个 4DGS-SLAM；dynamics-aware InfoModule + 各向同性正则化}
+}
+
+@article{rigs2026,
+  author  = {Wu, Chenyu and Li, Wanhua and Chen, Zhu-Tian and Pfister, Hanspeter},
+  title   = {RiGS: Rigid-aware 4D Gaussian Splatting from a Single Monocular Video},
+  journal = {arXiv preprint arXiv:2605.23672},
+  year    = {2026},
+  note    = {三类高斯基元（static/rigid/transient）+ scene flow 引导；单目视频}
+}
+
+@article{flow4dgsslam2026,
+  author  = {Wang, Yunsong and Lee, Gim Hee},
+  title   = {Flow4DGS-SLAM: Optical Flow-Guided 4D Gaussian Splatting SLAM},
+  journal = {arXiv preprint arXiv:2604.22339},
+  year    = {2026},
+  note    = {光流分解的类无关运动掩码 + 场景流先验传播时间中心 + GMM 时间不透明度}
+}
+
+% ============ 基础文献（2.2 节） ============
+
+@inproceedings{kerbl3dgs2023,
+  author    = {Kerbl, Bernhard and Kopanas, Georgios and Leimk{\"u}hler, Thomas and Drettakis, George},
+  title     = {3D Gaussian Splatting for Real-Time Radiance Field Rendering},
+  booktitle = {ACM Transactions on Graphics (SIGGRAPH)},
+  year      = {2023},
+  note      = {arXiv:2308.14740}
+}
+
+@article{mono2023,
+  author  = {Matsuki, Hidenobu and Murai, Riku and Kelly, Paul H. J. and Davison, Andrew J.},
+  title   = {Gaussian Splatting SLAM},
+  journal = {arXiv preprint arXiv:2312.06741},
+  year    = {2023},
+  note    = {CVPR 2024; MonoGS——首个 3DGS 单目 SLAM；逐帧光度直接优化跟踪；本文实验基座}
+}
+
+@inproceedings{droid2021,
+  author    = {Teed, Zachary and Deng, Jia},
+  title     = {DROID-SLAM: Deep Visual SLAM for Monocular, Stereo, and RGB-D Cameras},
+  booktitle = {NeurIPS},
+  year      = {2021},
+  note      = {arXiv:2108.10869; 循环迭代稠密 BA 层}
+}
+
+@article{droidw2026,
+  author  = {Li, Moyang and Zhu, Zihan and Pollefeys, Marc and Barath, Daniel},
+  title   = {DROID-SLAM in the Wild},
+  journal = {arXiv preprint arXiv:2603.19076},
+  year    = {2026},
+  note    = {可微不确定性 BA 的实时动态 RGB SLAM，~10 FPS}
+}
+
+@article{orbslam3_2021,
+  author  = {Campos, Carlos and Elvira, Richard and G{\'o}mez Rodr{\'i}guez, Juan J. and Montiel, Jos{\'e} M. M. and Tard{\'o}s, Juan D.},
+  title   = {ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM},
+  journal = {IEEE Transactions on Robotics},
+  year    = {2021},
+  note    = {arXiv:2007.11898; 图优化范式集大成（多地图+VI紧耦合+共视 BA）}
+}
+
+% ============ 致密化与地图管理（2.4 节，2026-09-05 核实） ============
+
+@inproceedings{robustsplat2025,
+  author    = {Fu, Chuanyu and Zhang, Yuqi and Yao, Kunbin and Chen, Guanying and Xiong, Yuan and Huang, Chuan and Cui, Shuguang and Cao, Xiaochun},
+  title     = {RobustSplat: Decoupling Densification and Dynamics for Transient-Free 3DGS},
+  booktitle = {ICCV},
+  year      = {2025},
+  note      = {arXiv:2506.02751; 延迟高斯生长（先静态结构后分裂克隆）+ 尺度级联掩码自举}
+}
+
+@article{edgs2025,
+  author  = {Kotovenko, Dmytro and Grebenkova, Olga and Ommer, Bj{\"o}rn},
+  title   = {EDGS: Eliminating Densification for Efficient Convergence of 3DGS},
+  journal = {arXiv preprint arXiv:2504.13204},
+  year    = {2025},
+  note    = {CVPR 2026 收录（据我们矩阵）；稠密三角化初始化一步近似几何，消除致密化}
+}
+
+@article{vadgs2025,
+  author  = {Zhang, Yikang and Fan, Rui},
+  title   = {VAD-GS: Visibility-Aware Densification for 3D Gaussian Splatting in Dynamic Urban Scenes},
+  journal = {arXiv preprint arXiv:2510.09364},
+  year    = {2025},
+  note    = {体素可见性推理 + 多样性视图选择 + MVS 恢复缺失结构}
+}
+
+@article{splatmap2025,
+  author  = {Hu, Yue and Liu, Rong and Chen, Meida and Beerel, Peter and Feng, Andrew},
+  title   = {SplatMAP: Online Dense Monocular SLAM with 3D Gaussian Splatting},
+  journal = {arXiv preprint arXiv:2501.07015},
+  year    = {2025},
+  note    = {SLAM 稠密点云驱动自适应致密化；Replica PSNR 36.864（+10.7%）}
+}
+
+@article{f4splat2026,
+  author  = {Kim, Injae and Kim, Chaehyeon and Bae, Minseong and Joo, Minseok and Kim, Hyunwoo J.},
+  title   = {F4Splat: Feed-Forward Predictive Densification for Feed-Forward 3D Gaussian Splatting},
+  journal = {arXiv preprint arXiv:2603.21304},
+  year    = {2026},
+  note    = {前馈致密化分数引导的空间自适应分配，显式控制高斯预算}
+}
+
+@article{tadgs2026,
+  author  = {Sandu, Vikram and Pathak, Mayurdeep and Soundararajan, Rajiv},
+  title   = {Temporally Aware Densification for Dynamic 3D Gaussian Splatting},
+  journal = {arXiv preprint arXiv:2606.23212},
+  year    = {2026},
+  note    = {TAD-GS；VAD/TAT/TOW 三元组，即插即用；动态场景致密化标杆}
+}
+
+@article{dynofa2026,
+  author  = {Droby, Ahmad},
+  title   = {Incoherent Deformation, Not Capacity: Diagnosing and Mitigating Overfitting in Dynamic Gaussian Splatting},
+  journal = {arXiv preprint arXiv:2604.16747},
+  year    = {2026},
+  note    = {Overfitting Analysis：split 致密化贡献 >80% 泛化差距（D-NeRF 6.18dB）；EER/GAD/PTDrop 缓解；与我们矩阵的记录一致}
+}
+
+% ============ Ch3 对照系与经典基础（RoGS 投稿稿 bib 转录，2026-09-05） ============
+
+@article{dynaslam2018,
+  author  = {Bescos, B. and F{\'a}cil, J. M. and Civera, J. and Neira, J.},
+  title   = {DynaSLAM: Tracking, Mapping and Inpainting in Dynamic Scenes},
+  journal = {IEEE Robotics and Automation Letters},
+  volume  = {3}, number = {4}, pages = {4076--4083},
+  year    = {2018}
+}
+
+@inproceedings{maskrcnn2017,
+  author    = {He, Kaiming and Gkioxari, Georgios and Doll{\'a}r, Piotr and Girshick, Ross},
+  title     = {Mask R-CNN},
+  booktitle = {IEEE ICCV},
+  pages     = {2980--2988},
+  year      = {2017}
+}
+
+@article{huber1964,
+  author  = {Huber, Peter J.},
+  title   = {Robust Estimation of a Location Parameter},
+  journal = {The Annals of Mathematical Statistics},
+  volume  = {35}, number = {1}, pages = {73--101},
+  year    = {1964}
+}
+
+@article{rodynslam2024,
+  author  = {Jiang, H. and Xu, Y. and Li, K. and Feng, J. and Zhang, L.},
+  title   = {RoDyn-SLAM: Robust Dynamic Dense RGB-D SLAM with Neural Radiance Fields},
+  journal = {IEEE Robotics and Automation Letters},
+  volume  = {9}, number = {9}, pages = {7509--7516},
+  year    = {2024}
+}
+
+@inproceedings{gsydslam2024,
+  author    = {Kong, M. and Lee, J. and Lee, S. and Kim, E.},
+  title     = {DGS-SLAM: Gaussian Splatting SLAM in Dynamic Environment},
+  booktitle = {arXiv:2411.10722},
+  year      = {2024}
+}
+
+@inproceedings{garadslam2025,
+  author    = {Li, M. and Chen, W. and Cheng, N. and Xu, J. and Li, D. and Wang, H.},
+  title     = {GARAD-SLAM: 3D Gaussian Splatting for Real-Time Anti Dynamic SLAM},
+  booktitle = {IEEE ICRA},
+  pages     = {11047--11053},
+  year      = {2025}
+}
+
+@inproceedings{refusion2019,
+  author    = {Palazzolo, E. and Behley, J. and Lottes, P. and Gigu{\`e}re, P. and Stachniss, C.},
+  title     = {ReFusion: 3D Reconstruction in Dynamic Environments for RGB-D Cameras Exploiting Residuals},
+  booktitle = {IEEE/RSJ IROS},
+  pages     = {7855--7862},
+  year      = {2019}
+}
+
+@article{rgdslam2026,
+  author  = {Wang, H. and Shou, Y. and Shen, L. and Li, S. and Cao, Y.},
+  title   = {RGD-SLAM: Robust Gaussian Splatting SLAM for Dynamic Environments},
+  journal = {Pattern Recognition},
+  volume  = {175}, pages = {113071},
+  year    = {2026}
+}
+
+@inproceedings{raft2020,
+  author    = {Teed, Zhaoyang and Deng, Jia},
+  title     = {RAFT: Recurrent All-Pairs Field Transforms for Optical Flow},
+  booktitle = {ECCV},
+  pages     = {402--419},
+  year      = {2020}
+}
+
+@article{umeyama1991,
+  author  = {Umeyama, Shinji},
+  title   = {Least-Squares Estimation of Transformation Parameters Between Two Point Patterns},
+  journal = {IEEE TPAMI},
+  volume  = {13}, number = {4}, pages = {376--380},
+  year    = {1991}
+}
+
+% ============ 经典 SLAM（2.1 节，2026-09-12 核实：IEEE/AAAI/官方页） ============
+
+@inproceedings{davison2003monoslam,
+  author    = {Davison, Andrew J.},
+  title     = {Real-Time Simultaneous Localisation and Mapping with a Single Camera},
+  booktitle = {Proceedings of the Ninth IEEE International Conference on Computer Vision (ICCV)},
+  pages     = {1403--1410},
+  year      = {2003},
+  note      = {MonoSLAM：EKF 滤波式单目 SLAM 起点；滤波范式的代表引用}
+}
+
+@inproceedings{fastslam2002,
+  author    = {Montemerlo, Michael and Thrun, Sebastian and Koller, Daphne and Wegbreit, Ben},
+  title     = {FastSLAM: A Factored Solution to the Simultaneous Localization and Mapping Problem},
+  booktitle = {Proceedings of the 18th National Conference on Artificial Intelligence (AAAI)},
+  pages     = {593--598},
+  year      = {2002},
+  note      = {粒子滤波缓解 EKF 平方复杂度（FastSLAM 系）}
+}
+
+@article{orbslam2015,
+  author  = {Mur-Artal, Ra{\'u}l and Montiel, J. M. M. and Tard{\'o}s, Juan D.},
+  title   = {ORB-SLAM: A Versatile and Accurate Monocular SLAM System},
+  journal = {IEEE Transactions on Robotics},
+  volume  = {31}, number = {5}, pages = {1147--1163},
+  year    = {2015},
+  note    = {arXiv:1502.00956; 稀疏特征点图优化范式集大成}
+}
+
+@article{orbslam2_2017,
+  author  = {Mur-Artal, Ra{\'u}l and Tard{\'o}s, Juan D.},
+  title   = {ORB-SLAM2: An Open-Source SLAM System for Monocular, Stereo, and RGB-D Cameras},
+  journal = {IEEE Transactions on Robotics},
+  volume  = {33}, number = {5}, pages = {1255--1262},
+  year    = {2017},
+  note    = {arXiv:1610.06475; 单目/双目/RGB-D 完整系统}
+}
+
+% ============ 应用侧与动态环境综述（1.1 节，2026-09-12 核实） ============
+
+@article{azuma1997ar,
+  author  = {Azuma, Ronald T.},
+  title   = {A Survey of Augmented Reality},
+  journal = {Presence: Teleoperators and Virtual Environments},
+  volume  = {6}, number = {4}, pages = {355--385},
+  year    = {1997},
+  note    = {AR 定义性综述：虚实时空对齐是注册的根本要求}
+}
+
+@article{saputra2018survey,
+  author  = {Saputra, Mark R. U. and Markham, Andrew and Trigoni, Niki},
+  title   = {Visual SLAM and Structure from Motion in Dynamic Environments: A Survey},
+  journal = {ACM Computing Surveys},
+  volume  = {51}, number = {2}, pages = {1--36},
+  year    = {2018},
+  note    = {动态环境视觉 SLAM 首个系统综述；运动物体=主要误差源}
+}
+
+@article{wang2024dynamicsurvey,
+  author  = {Wang, Yanan and Tian, Yaobin and Chen, Jiawei and Xu, Kun and Ding, Xilun},
+  title   = {A Survey of Visual SLAM in Dynamic Environment: The Evolution from Geometric to Semantic Approaches},
+  journal = {IEEE Transactions on Instrumentation and Measurement},
+  volume  = {73},
+  pages   = {2523221},
+  year    = {2024},
+  note    = {DOI 10.1109/TIM.2024.3420374; 几何→语义演进脉络；AR/机器人/自动驾驶三牵引}
+}
+
+@article{cubifygs2026,
+  author  = {Ren, Bohan and Yang, Dianyi and Liu, Shiyang and Gao, Yu and Tang, Jiadong and Lai, Zhilin and Yang, Yi and Fu, Mengyin},
+  title   = {{CubifyGS}: Object-Centric {3D} Gaussian Splatting for Lifelong Dynamic Scene Maintenance},
+  journal = {arXiv:2606.28720},
+  year    = {2026},
+  note    = {全文已核 2026-09-20（arXiv HTML v2, 2026-06-27，monogs-ours 占用复核）；物体级
+             explicit ghost pruning + 资产库复用；真实序列含 bonn_kidnapping_box2；无 ATE}
+}

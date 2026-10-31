@@ -1,0 +1,6 @@
+# large binaries never enter git
+01_literature/papers/*.pdf
+*.pdf.tmp
+__pycache__/
+.DS_Store
+02_analysis/intermediate/
