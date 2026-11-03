@@ -536,3 +536,94 @@
   journal = {arXiv preprint arXiv:1906.05797},
   year    = {2019}
 }
+
+% ===== 致密化判据谱系（2026-11-04 增补；著录自 arXiv MCP 元数据 + 文献卡，定稿前逐字回源）=====
+
+@inproceedings{stopthepop,
+  author    = {Radl, Lukas and Steiner, Michael and Parger, Mathias and Weinrauch, Alexander and Kerbl, Bernhard and Steinberger, Markus},
+  title     = {{StopThePop}: sorted {Gaussian} splatting for view-consistent real-time rendering},
+  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2024},
+  annote    = {arXiv:2402.00525（卡片 #2 + MCP 元数据 2026-11-04）。分层 per-pixel 重排消除 popping；
+               同质量下高斯数约减半。致密化统计污染谱系的基座之一}
+}
+
+@misc{counting_contributions,
+  author = {Rogge, Marcel and Schuster, Ren{\'e} and Stricker, Didier},
+  title  = {Counting contributions, not views: occlusion-aware densification for {3D} {Gaussian} splatting},
+  year   = {2026},
+  note   = {arXiv:2610.27108},
+  annote = {arXiv MCP 元数据 2026-11-04（卡片 #1，DFKI）。遮挡感知过滤器 + 贡献量归一化
+            替代 view 计数分母}
+}
+
+@inproceedings{absgs,
+  author    = {Ye, Zongxin and Li, Wenyu and Liu, Sidun and Qiao, Peng and Dou, Yong},
+  title     = {{AbsGS}: recovering fine details for {3D} {Gaussian} splatting},
+  booktitle = {ACM International Conference on Multimedia (ACM MM)},
+  year      = {2024},
+  annote    = {arXiv:2404.10484（卡片 #10 + MCP 元数据 2026-11-04）。gradient collision 诊断；
+               同向梯度分量作致密化判据}
+}
+
+@inproceedings{taming3dgs,
+  author    = {Mallick, Saswat Subhajyoti and Goel, Rahul and Kerbl, Bernhard and Carrasco, Francisco Vicente and Steinberger, Markus and De La Torre, Fernando},
+  title     = {Taming {3DGS}: high-quality radiance fields with limited resources},
+  booktitle = {SIGGRAPH Asia Conference Papers},
+  year      = {2024},
+  annote    = {arXiv:2406.15643（卡片 #9 + MCP 元数据 2026-11-04）。构造式精确预算致密化，
+               score-based splatting}
+}
+
+@inproceedings{mcmcgs,
+  author    = {Kheradmand, Shakiba and Rebain, Daniel and Sharma, Gopal and Sun, Weiwei and Tseng, Jeff and Isack, Hossam and Kar, Abhishek and Tagliasacchi, Andrea and Yi, Kwang Moo},
+  title     = {{3D} {Gaussian} splatting as {Markov} chain {Monte} {Carlo}},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2024},
+  annote    = {arXiv:2404.09591（卡片 #3 + MCP 元数据 2026-11-04）。clone/split 重写为保概率
+               重定位；固定预算范式}
+}
+
+@misc{topogsslam,
+  author = {Cheng, Wei-Tse and Chiou, Yen-Jen and Yang, Yuan-Fu},
+  title  = {Rethinking densification in {Gaussian} {SLAM}: a stationary sampling perspective},
+  year   = {2026},
+  note   = {arXiv:2601.00705},
+  annote = {arXiv MCP 元数据 2026-11-04（卡片 #16，NYCU）。固定拓扑 + 覆盖率触发初始化；
+            主张静态室内精度在中等原语数饱和。研究内容三讨论节必须正面回应}
+}
+
+@inproceedings{pixelgs,
+  author    = {Zhang, Zheng and Hu, Wenbo and Lao, Yixing and He, Tong and Zhao, Hengshuang},
+  title     = {{Pixel-GS}: density control with pixel-aware gradient for {3D} {Gaussian} splatting},
+  booktitle = {European Conference on Computer Vision (ECCV)},
+  year      = {2024},
+  annote    = {arXiv:2403.15530（卡片 #11 + MCP 元数据 2026-11-04）。按覆盖像素数加权平均梯度}
+}
+
+@misc{acdgs,
+  author = {Zhong, Houqiang and Zhu, Tianchi and Hu, Qiang and Zhang, Xiaoyun and Song, Li and Zhang, Wenjun},
+  title  = {{ACD-GS}: asymmetric curvature-aware densification for {3D} {Gaussian} splatting},
+  year   = {2026},
+  note   = {arXiv:2610.39399},
+  annote = {arXiv MCP 元数据 2026-11-04（卡片 #13，SJTU）。二阶深度曲率结构先验 +
+            clone/split 非对称解耦}
+}
+
+@inproceedings{robustsplat,
+  author    = {Fu, Chuanyu and Zhang, Yuqi and Yao, Kunbin and Chen, Guanying and Xiong, Yuan and Huang, Chuan and Cui, Shuguang and Cao, Xiaochun},
+  title     = {{RobustSplat}: decoupling densification and dynamics for transient-free {3DGS}},
+  booktitle = {IEEE/CVF International Conference on Computer Vision (ICCV)},
+  year      = {2025},
+  annote    = {arXiv:2506.02751（卡片 #18 + MCP 元数据 2026-11-04）。延迟高斯增长 + 尺度级联
+               掩码自举；指出致密化过程本身把瞬态扰动长进地图}
+}
+
+@inproceedings{tadgs,
+  author    = {Sandu, Vikram and Pathak, Mayurdeep and Soundararajan, Rajiv},
+  title     = {Temporally aware densification for dynamic {3D} {Gaussian} splatting},
+  booktitle = {European Conference on Computer Vision (ECCV)},
+  year      = {2026},
+  annote    = {arXiv:2606.23212（卡片 #19 + MCP 元数据 2026-11-04）。VAD/TAT/TOW 三件套；
+               时间可见性接入致密化。离线动态致密化标杆}
+}
