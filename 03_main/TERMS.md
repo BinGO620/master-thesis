@@ -19,6 +19,10 @@
 | Mapping | 建图 | 不写「地图构建」（首次全称里已用） |
 | Densification | 致密化 | |
 | Pruning | 剪枝 | |
+| Primitive | 基元 | 高斯地图中的单个高斯；章内不写「点」「高斯」（可数单个体时） |
+| Densification dose | 剂量 | 梯度阈值决定的单轮致密化新增量，2026-11-08 ch5 用 |
+| Churn (turnover ratio) | 周转率 | 剪枝删除量与致密化新增量之比，2026-11-08 ch5 用 |
+| Clone / split | 克隆 / 分裂 | 致密化算子，章内用中文 |
 | Lifecycle | 生命周期 | 指高斯的产生与删除过程 |
 | Pose | 位姿 | |
 | Trajectory | 轨迹 | |
