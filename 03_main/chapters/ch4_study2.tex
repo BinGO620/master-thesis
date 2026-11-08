@@ -68,3 +68,208 @@
 
 % TODO(写作队列)：4.4 实验（数字从 RoGS-Map/results/evidence 与 monogs-ours results 重取，
 % 注明批次与序列集合；与第 3 章的序列集合差异要写明）；4.5 小结（写边界，不复述）。
+
+% ============ 4.3 实验 + 4.4 小结（2026-11-08 成文；关卡② 待审） ============
+% 数字来源纪律：全部数字出自 CVM2027 投稿件批次。表 4.1~4.4 行由 RoGS-Map/papers/
+% paper2/tables/*.tex 程序化提取（生成器脚本可复跑，"do not edit by hand" 工件），
+% 全部 239 处数字经 RoGS-Map/PROVENANCE 逐格核验命中。retention 拆解出自
+% monogs-ours/results/paper2_fulltable/evidence/dyn_cost_decomp_2026-10-05.md。
+% 红线（R2_sections/07）：修复机制本体归 DynaGSLAM 必引；在线↔离线禁混引（J3 性质
+% 相反分开表述）；禁"首个恢复动态"；codec 联动未做不声称。
+
+\section{实验}
+\label{sec:study2-exp}
+
+\subsection{实验底图与协议}
+
+地图研究的全部读数都长在底图上，底图本身要先交代。本章的底图由第 3 章的先验 RGB-D
+栈在 BONN 动态序列上运行产生，其跟踪质量见表~\ref{tab:study2-baseline}：六条公共
+序列上 2.2 到 5.5 厘米，两条 person\_tracking 为 11.3 与 10.4 厘米。表中的 11 个
+复现系统与本栈同机同协议评测，静态方法在动态序列上严重退化，动态方法分布在 1.6 到
+20 厘米之间。先验栈一行在本章只作背景，它是地图研究的出发点，不是本章的结果。
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{公共 BONN 序列上的绝对轨迹误差（RMSE，厘米，3 种子均值±标准差，全轨迹
+Horn SE(3) 对齐；上排 11 系统为同一台机器的复现，DynaGSLAM 委托外部前端定位故无
+方差；上标 d 表示首次运行发散、按协议重跑后的取值；末行为论文一的先验栈，独立批次
+同机同协议，作本章背景）}
+\label{tab:study2-baseline}
+\begin{tabular}{@{}llcccccc@{}}
+\toprule
+方法 & 表示族 & balloon & balloon2 & crowd & crowd2 & person\_tracking & person\_tracking2 \\
+\midrule
+\multicolumn{8}{@{}l}{静态方法} \\
+MonoGS~\cite{MonoGS} & 3DGS & 39.32$\pm$1.01 & 22.05$\pm$1.55 & 86.47$\pm$18.34$^\mathrm{d}$ & 147.46$\pm$39.03$^\mathrm{d}$ & 44.83$\pm$9.06 & 43.85$\pm$8.55 \\
+SplaTAM~\cite{SplaTAM} & 3DGS & 36.50$\pm$0.53 & 37.47$\pm$2.87 & 135.37$\pm$36.15$^\mathrm{d}$ & 493.22$\pm$470.66$^\mathrm{d}$ & 92.52$\pm$18.93$^\mathrm{d}$ & 132.72$\pm$9.37$^\mathrm{d}$ \\
+Co-SLAM~\cite{CoSLAM} & implicit & 27.10$\pm$0.97 & 35.10$\pm$4.07 & 35866.32$\pm$38265.29$^\mathrm{d}$ & 24905.40$\pm$42817.31$^\mathrm{d}$ & 75.50$\pm$6.52 & 71.26$\pm$2.90 \\
+ORB-SLAM3~\cite{ORBSLAM3} & classical & 7.27$\pm$1.45 & 19.81$\pm$2.18 & 76.60$\pm$27.86$^\mathrm{d}$ & 111.41$\pm$14.75$^\mathrm{d}$ & 69.54$\pm$2.19 & 76.82$\pm$2.14 \\
+\midrule
+\multicolumn{8}{@{}l}{动态方法} \\
+DG-SLAM~\cite{dgslam} & 3DGS & 3.66$\pm$0.02 & 3.83$\pm$0.08 & 5.76$\pm$0.15 & 6.39$\pm$0.50 & 4.25$\pm$0.06 & 6.12$\pm$0.13 \\
+RGD-SLAM~\cite{RGDSLAM} & 3DGS & 2.45$\pm$0.22 & 4.26$\pm$0.89 & 2.61$\pm$0.28 & 2.36$\pm$0.06 & 7.21$\pm$1.24 & 20.10$\pm$2.55 \\
+WildGS-SLAM~\cite{WildGS} & 3DGS & 2.75$\pm$0.07 & 2.42$\pm$0.04 & 1.55$\pm$0.06 & 2.17$\pm$0.05 & 3.63$\pm$0.08 & 3.09$\pm$0.03 \\
+DynaGSLAM~\cite{dynagslam} & 3DGS & 8.36 & 9.36 & 23.82 & 13.73 & 8.94 & 13.69 \\
+DynaSLAM~\cite{DynaSLAM} & classical & 2.88$\pm$0.16 & 2.59$\pm$0.10 & 2.07$\pm$0.21 & 2.85$\pm$0.28$^\mathrm{d}$ & 4.53$\pm$1.81 & 8.82$\pm$1.18 \\
+NGD-SLAM~\cite{NGDSLAM} & classical & 2.82$\pm$0.07 & 2.46$\pm$0.08 & 1.85$\pm$0.16 & 2.22$\pm$0.07 & 4.97$\pm$0.44 & 6.63$\pm$0.43 \\
+RoDyn-SLAM~\cite{rodynslam} & implicit & 8.47$\pm$0.31 & 11.90$\pm$0.21 & 5.60$\pm$0.18 & 4.63$\pm$0.06 & 16.39$\pm$0.54 & 14.36$\pm$0.11 \\
+\midrule
+先验 RGB-D 栈（论文一）& 3DGS & 3.25$\pm$0.07 & 5.48$\pm$0.27 & 2.23$\pm$0.10 & 2.26$\pm$0.32 & 11.31$\pm$0.70 & 10.40$\pm$0.28 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{地图的字节构成}
+
+一条 SH 零阶的高斯基元占 80 字节，栅格化器只读其中 14 个字段共 56 字节，其余 6 个
+字段 24 字节是渲染器从不读取的记账信息，占原始字节的 30\%。把熵编码从 14 个渲染字段
+扩到全部 20 个字段，码率只多付 1.04 倍。这两条读数合起来说明，对 SLAM 地图做朴素的
+字节级压缩，首先被压掉的部分里有接近三成是与画面无关的簿记，字节预算的字面数字
+高估了地图的实际内容。
+
+几何统计给出第二个观察。测过的 14 张动态地图里，88.8\% 到 94.7\% 的四元数偏离
+单位范数超过 1\%，旋转参数存在普遍的冗余自由度。动态地图中 78\% 到 92\% 的基元
+接近各向同性，干净的静态序列里这个比例只有 52\% 到 76\%，有人走动时升到 81\% 到
+85\%，坐姿人群高到 89\% 到 91\%。动态内容倾向于把基元推向各向同性，这为后面按
+尺度分组的压缩策略提供了直接的统计依据。
+% 来源：paper2_cvm.tex §4（gate2 注记：storage_census_2026-10-05.md、anatomy_census.json、
+% l1_readout_2026-10-04.md）。
+
+\subsection{压缩率与质量的工作点}
+
+表~\ref{tab:study2-rd} 给出七条 Bonn 序列、三种子平均的压缩率与质量曲线。
+无损层里通用压缩器只能拿到 1.37 到 1.62 倍。有损层里两个后训练学习基线把压缩率推到
+6 倍以上：SOG 量化后 6.53 倍、全图 PSNR 只掉 0.02 分贝；Niedermayr c3dgs 用量化感知
+训练重拟合 5 千步，6.15 倍且全图 PSNR 反升 0.77 分贝，代价是必须逐图重新训练。
+本方法的三个工作点不做任何重训练：近无损点 5.96 倍、全图只掉 0.01 分贝；中间点
+8.77 倍、掉 0.06 分贝，落在质量与码率的最优带；激进点 15.11 倍、全图掉 0.64 分贝，
+静态区掉约 2.7 分贝，held-out 序列上外推最差（负 1.77 分贝），如实报告。
+% 来源：tab_rd（scripts/gs_compress/paper2_codec_tables.py 生成；D2-025 L1/L2/L3 +
+% post-hoc generic + learned baselines 批次）。
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{七条 Bonn 序列上的压缩率与质量（三种子均值；量化位宽按位置/不透明度/
+缩放/旋转/球谐顺序；held-out 为未参与调参序列的静态 PSNR 变化）}
+\label{tab:study2-rd}
+\begin{tabular}{@{}lcccrccr@{}}
+\toprule
+方法 & 量化位宽 & 压缩率 & 字节/基元 & 全图 PSNR & $\Delta$ & 静态 PSNR & held-out $\Delta$ \\
+\midrule
+\multicolumn{8}{@{}l}{源文件与无损通用压缩器} \\
+\quad source (uncompressed, 20-field f32) & -- & 1.00$\times$ & 80 & 15.38 & $0.00$ & 21.95 & $0.00$ \\
+\quad zlib (lossless) & -- & 1.47$\times$ & 54.3 & 15.38 & $0.00$ & 21.95 & $0.00$ \\
+\quad zstd (lossless) & -- & 1.54$\times$ & 51.8 & 15.38 & $0.00$ & 21.95 & $0.00$ \\
+\quad lzma (lossless) & -- & 1.62$\times$ & 49.3 & 15.38 & $0.00$ & 21.95 & $0.00$ \\
+\quad blosc2 (shuffle+delta) (lossless) & -- & 1.37$\times$ & 58.2 & 15.38 & $0.00$ & 21.95 & $0.00$ \\
+\midrule
+\multicolumn{8}{@{}l}{有损基线（通用截断与后训练学习）} \\
+\quad blosc2 TRUNC\_PREC=16 (lossy) & -- & 2.84$\times$ & 28.1 & -- & -- & -- & -- \\
+\quad blosc2 TRUNC\_PREC=8 (lossy) & -- & 3.80$\times$ & 21.1 & -- & -- & -- & -- \\
+\quad SOG~\cite{SOG} & -- & 6.53$\times$ & 12.2 & 15.36 & $-0.02$ & 21.82 & $-0.04$ \\
+\quad Niedermayr c3dgs~\cite{Compressed3DGS} & -- & 6.15$\times$ & 13.0 & 16.15 & $+0.77$ & 20.94 & $-0.01$ \\
+\midrule
+\multicolumn{8}{@{}l}{本文（均匀量化 + zlib 编解码，有损）} \\
+\quad near-lossless & 16/8/8/8/8 & 5.96$\times$ & 13.4 & 15.37 & $-0.01$ & 21.79 & $-0.00$ \\
+\quad mid & 10/6/6/6/6 & 8.77$\times$ & 9.1 & 15.32 & $-0.06$ & 21.64 & $-0.21$ \\
+\quad aggressive & 8/4/4/4/4 & 15.11$\times$ & 5.3 & 14.74 & $-0.64$ & 19.21 & $-1.77$ \\
+\midrule
+\multicolumn{8}{@{}l}{消融：加体素合并（非工作点）} \\
+\quad near-lossless + voxel merge & 16/8/8/8/8 & 7.81$\times$ & 10.2 & 15.30 & $-0.08$ & -- & -- \\
+\quad mid + voxel merge & 10/6/6/6/6 & 11.26$\times$ & 7.1 & 15.25 & $-0.13$ & -- & -- \\
+\quad aggressive + voxel merge & 8/4/4/4/4 & 19.00$\times$ & 4.2 & 14.72 & $-0.66$ & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{反动态代价}
+
+表~\ref{tab:study2-dyncost} 测量反动态政策的代价：把被抹掉的动态内容原样插回冻结
+地图，量的是天花板，不是任何在线系统的达成值。五条序列的动态区增益 17.9 到 22.2
+分贝，同区深度误差比 0.16 到 0.27，全图增益 5.4 到 12.0 分贝；静态区没有一条受损，
+变化全部为正。代价与拥挤度正相关，人群序列最高，跨序列在 6\% 到 29\% 之间，中位
+22\%。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{反动态代价的逐序列读数（冻结地图插入探针，canonical 掩码分区；动态区 =
+真实损坏子集；每序列两图取基线臂）}
+\label{tab:study2-dyncost}
+\begin{tabular}{lcccc}
+\toprule
+序列 & 动态区增益 & 动态区深度比 & 全图 & 静态区 \\
+ & (dB) & （越低越好） & (dB) & (dB) \\
+\midrule
+crowd & 22.2 & 0.19 & +12.0 & +0.29 \\
+crowd2 & 21.6 & 0.18 & +10.6 & +0.04 \\
+crowd3 & 21.0 & 0.19 & +10.4 & +0.39 \\
+person\_tracking & 19.5 & 0.27 & +8.7 & +0.28 \\
+balloon2 & 17.9 & 0.16 & +5.4 & +0.33 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+几何与外观的拆解回答代价由什么承担。把插入的动态基元按有无运动分组，无运动组的
+基元保留率 0.80 到 0.93，冻结组只有 0.10 到 0.39。被抹除区域的大半渲染质量其实
+靠把动态几何留在地图里挽回，逐帧运动本身不是主要杠杆。在线阶段如何以可负担的方式
+达成这一天花板，属于第 5 章的在线生长问题，两章口径互斥。
+% 来源：tab_dyncost_seq（dyn_cost_5seq_2026-10-05.json）+ dyn_cost_decomp_2026-10-05.md
+%（retention 拆解）+ verdict_dyn_cost_5seq（成本 6–29%，中位 22%）。
+
+\subsection{离线修复}
+
+修复算子把 DynaGSLAM~\cite{dynagslam} 的动态高斯管理从运行期搬到离线：修的是已冻结
+的地图，静态层逐位不动，只有腾空区按观测重建。表~\ref{tab:study2-dynport} 把同一
+机制的两种放置放在同一张表里。离线是完整的七序列、三种子网格，21 格全部通过预注册
+门：动态区增益 5.49 到 8.95 分贝，深度比 0.23 到 0.61，静态区变化在负 0.035 到
+正 0.196 分贝之间，即静态层确实逐位未动。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{同一动态高斯管理的在线与离线放置对照（对照基线 = 抹除；在线代价为逐帧建图
+开销增幅，离线代价为修复占底图在线墙钟的份额；离线为 7 序列 × 3 种子全网格 21 格，
+在线仅两序列；该对照为描述性而非单变量，见正文）}
+\label{tab:study2-dynport}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+放置 & 动态区增益 J1 (dB) & 深度比 J2 & 静态区 J3 (dB) & 代价 & 结果 \\
+\midrule
+在线（同一机制）& $+6.97/+6.96$ & 0.35/0.26 & $-0.49/-1.02$ & $+95.1/+88.6\%$ & fail \\
+抹除（参照）& $0$ & $1$ & $0$ & --- & --- \\
+离线（本文）& $+5.49$--$+8.95$ & 0.23--0.61 & $-0.035$ to $+0.196$ & 0.11--0.30$\times$ & pass 21/21 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+同一机制在线运行的对照行需要两句限定。其一，把机制从在线搬到离线同时改变了位姿
+来源、静态层保护、关键帧日程与掩码通路四件事，这一对照描述的是放置选择的总效应，
+不是单变量归因。其二，在线两序列的动态区读数来自快照口径仪器，位姿与被评帧不同源，
+含位姿混杂，与离线数字不可比；两行的静态区指标性质也不同，离线是逐位未动，在线是
+联合优化中被改。
+
+输出形态是设计决策而不是局限。单 PLY 合并形态正是动态内容丢失的形态，把动态内容
+装回去必须以层序列保存，静态层才能保持逐位不变。压缩编解码只能消费层序列输出，
+不能消费合并后的单文件，两者的联动不在本章范围内。
+% 来源：tab_dynport（offline = results/dynport_offline/evidence_L3 manifest；
+% online = results/dynport/evidence/manifest_L1_v2.json，snapshot 口径）。
+
+\section{小结}
+\label{sec:study2-summary}
+
+本章回答引言提出的四个问题。贵在哪里：80 字节的基元里三成是渲染器不读的记账字段，
+四元数与各向同性统计给出压缩的统计着力点。差在哪里：反动态范式抹掉的动态内容在
+冻结地图上值 17.9 到 22.2 分贝的动态区增益，代价与人群密度正相关，且大半由几何
+保留而非外观优化承担。能不能压缩：不重训练的三个工作点覆盖 6 到 15 倍，中间点
+8.77 倍只掉 0.06 分贝，学习型基线的强读数以逐图重训练为前提。能不能装回：离线
+放置的动态管理 21 格全部过门，静态层逐位未动，同一机制在线因开销不可负担。
+
+边界与适用条件：压缩的激进点在 held-out 序列上外推最差；修复以层序列为输出形态，
+与单文件压缩不联动；在线与离线读数来自不同仪器口径，本章不混引。全部数字出自
+CVM2027 投稿件批次，工件经 239 处逐格核验。
+% WRITING_RULES 四：小结不复述表格细节，只留四问四答与边界。
