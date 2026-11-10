@@ -25,6 +25,7 @@ RoGS-SLAM 完整方法；RoGS-Densify 的实验臂继承同一方法平台）。
 | `01_small_papers/MMM2027/` | **唯一真身** | 论文1 camera-ready 工作区（编译/图/交付物/evidence）；代码复现见 RoGS-SLAM |
 | `01_small_papers/CVM2027/` | **冻结副本** | 论文2 源已迁至 **RoGS-Map `papers/paper2/`**（唯一真身），本目录只读，勿改 |
 | `02_resources/` | 参考资料 | 审稿分析、模板、CFP |
+| `05_submission/` | **唯一真身**（2026-11-10 建） | 学位流程提交件：`school_forms/` = 中期检查报告（2026-12-14 窗）内容稿 + 官方表样副本；定稿誊入官方 Word 表后签字送审 |
 | `04_archive/` | 历史快照 | 两篇小论文的 v0–v6 版本链（只增不改） |
 
 ## 各章 ↔ 证据链
